@@ -43,6 +43,7 @@ CONFIGURATION_STMP = {
 # Choix de l'utilisateur
 
 def confirmationUtilisateur(messageChoix):
+    messageChoix += "(N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n"
     confirmation = ["Oui", "Oui pour Tout", "Non", "Stop"]
     choixUtilisateur = ''
 
@@ -213,7 +214,7 @@ if __name__ == '__main__':
                             choixUtilisateur = confirmationUtilisateur(messageChoix)
                     
                         if envoiePrecedent == "Envoyé !":
-                                messageChoix = ("Un mail à déjà été envoyé à --" + nomEntreprise + "--, voulez-vous en renvoyer un ?\n")
+                                messageChoix = "Un mail à déjà été envoyé à --" + nomEntreprise + "--, voulez-vous en renvoyer un ?\n"
                                 choixUtilisateur = confirmationUtilisateur(messageChoix)
 
                     # Si Stop : Arrêt du programme
