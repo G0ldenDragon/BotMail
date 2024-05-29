@@ -1,5 +1,11 @@
 # Utilisation de BotMail
 
+### Packages
+
+- pip freeze > uninstallation.txt
+- pip uninstall -r uninstallation.txt -y
+- pip install -r ./requirements.txt
+
 ### Configuration Nécessaire
 
 - Fichier CSV
