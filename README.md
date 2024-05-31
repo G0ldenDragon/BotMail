@@ -16,9 +16,8 @@ Une demande via le CMD permet de choisir si on veut effectivement envoyé ce mai
 
 ### Configuration Nécessaire
 
-- [ ] Fichier CSV
-    - [ ] Le nom du fichier CSV doit comprendre ".csv".
-
+- Fichier CSV
+    - Le nom du fichier CSV doit comprendre ".csv".
     - Un format de CSV particulier :
         envoiePrecedent | nomEntreprise | emailEntreprise | adresseEntreprise | telephoneEntreprise
         VIDE | Nom de l'entreprise | Email de l'entreprise | Adresse de l'entreprise | Numéro de Téléphone de l'entreprise
