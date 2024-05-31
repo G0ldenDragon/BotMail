@@ -8,6 +8,9 @@ Il est possible d'ajouter d'autres documents, tous uniquement sous format PDF.
 Chaque problème rencontrer va, par sécurité, faire stopper le programme.
 Une demande via le CMD permet de choisir si on veut effectivement envoyé ce mail ou non permettant au préalable de s'assurer que la Lettre de Motivation à bien été modifier.
 
+> [!warning] Title
+> Contents
+
 ### Packages
 
 - pip freeze > uninstallation.txt
