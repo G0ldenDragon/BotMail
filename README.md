@@ -2,7 +2,7 @@
 
 ### Fonctionnement
 
-BotMail va, à partir d'un fichier CSV renseignant le nom et l'email de l'entreprise, modifier le Lettre de Motivation (en ".docx") et envoyer automatiquement des mails.
+BotMail va, à partir d'un fichier CSV renseignant le nom et l'email de l'entreprise, modifier la Lettre de Motivation (en ".docx") et envoyer automatiquement des mails.
 Puis il va imprimer sous format PDF la Lettre de Motivation et le joindre en tant que document au mail.
 Il est possible d'ajouter d'autres documents, tous uniquement sous format PDF.
 Chaque problème rencontrer va, par sécurité, faire stopper le programme.
