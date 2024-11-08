@@ -1,6 +1,6 @@
 # !!!!!!! Le CSV doit être formater sous cette forme !!!!!!!!!!!!!
 NOM_COLONNE = ["envoiePrecedent", "nomEntreprise", "emailEntreprise", "adresseEntreprise", "telephoneEntreprise"]
-FICHIER_CSV = r"path/to/Adresses.csv"
+FICHIER_CSV = r"botmail.csv"
 
 # !!!!!!! Le nom de l'entreprise doit être remplacée par "XXN" !!!!!!!!!!!!!
 # !!!!!!! L'adresse de l'entreprise doit être remplacée par "XXA" !!!!!!!!!!!!!
@@ -171,6 +171,10 @@ if __name__ == '__main__':
                             # Remplacement du numéro de Téléphone de l'entreprise
                             if "XXT" in paragraph.text and telephoneEntreprise != "":
                                 paragraph.text = paragraph.text.replace("XXT", telephoneEntreprise)
+                            # Remplacement de la Date
+                            # if "XXD" in paragraph.text and currentDate != "":
+                                # paragraph.text = paragraph.text.replace("XXD", XXD)
+                                # Remplacer XXD par automatiquement la date actuelle.
 
                         motivationLetter.save(LETTRE_MOTIVATION_FINALE)
 
