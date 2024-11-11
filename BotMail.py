@@ -153,7 +153,7 @@ if __name__ == '__main__':
 
                     # Modification du Docx en fonction des noms des entreprises
                     print("Modification...")
-                    try:
+                    try:                    
                         motivationLetter = Document(LETTRE_MOTIVATION)
                         for paragraph in motivationLetter.paragraphs:
                             # Remplacement du Nom de l'entreprise
@@ -171,10 +171,18 @@ if __name__ == '__main__':
                             # Remplacement du numéro de Téléphone de l'entreprise
                             if "XXT" in paragraph.text and telephoneEntreprise != "":
                                 paragraph.text = paragraph.text.replace("XXT", telephoneEntreprise)
+
                             # Remplacement de la Date
-                            # if "XXD" in paragraph.text and currentDate != "":
-                                # paragraph.text = paragraph.text.replace("XXD", XXD)
-                                # Remplacer XXD par automatiquement la date actuelle.
+                            if "XXD" in paragraph.text:
+                                import locale
+                                import time
+                                # Problème de thread-safe.
+                                locale.setlocale(locale.LC_ALL, '')
+                                # Obtention de la traduction de la date dans la langue actuelle de l'ordinateur.
+                                currentDate = time.localtime()
+                                # Traduction de la date
+                                translatedCurrentDate = time.strftime("%d %B %Y", currentDate)
+                                paragraph.text = paragraph.text.replace("XXD", translatedCurrentDate.title())
 
                         motivationLetter.save(LETTRE_MOTIVATION_FINALE)
 
@@ -250,7 +258,7 @@ if __name__ == '__main__':
                         print("Ajout du corps du mail...")
                         try:
                             # Ouvre et lis les données binaires du .txt pour écrire le corps de mail
-                            with open(EMAIL_CONTENU) as file_reader:
+                            with open(EMAIL_CONTENU, 'r', encoding='utf-8') as file_reader:
                                 corps = file_reader.read()
 
                         except Exception as e:
