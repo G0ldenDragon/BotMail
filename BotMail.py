@@ -273,7 +273,7 @@ if __name__ == '__main__':
                         print("Ajout des PDFs au mail...")
                         try:
                             for PDFPath, PDFName in PDFFILES.items():
-                                with open(PDFPath, 'rb', encoding='utf-8') as file_reader:
+                                with open(PDFPath, 'rb') as file_reader:
                                     file_data = file_reader.read()
                                     mail.add_attachment(file_data, maintype='application', subtype='pdf', filename=PDFName)
 
