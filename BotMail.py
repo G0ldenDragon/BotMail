@@ -68,7 +68,7 @@ def resultatCSV(resultat, ligne):
         adresseEntreprise = ligne.get("adresseEntreprise")
         telephoneEntreprise = ligne.get("telephoneEntreprise")
 
-        with open("Résultats - " + FICHIER_CSV, 'a') as CSV_file:
+        with open("Résultats - " + FICHIER_CSV, 'a', encoding='utf-8') as CSV_file:
             writer = DictWriter(CSV_file, fieldnames=NOM_COLONNE)
 
             writer.writerow({
@@ -96,14 +96,14 @@ if __name__ == '__main__':
             print("ERREUR : Le fichier CSV est vide.")
 
         # Lecture et extractions des données du CSV
-        with open(FICHIER_CSV, 'r') as CSVFile:
+        with open(FICHIER_CSV, 'r', encoding='utf-8') as CSVFile:
             
             # Définition du choix utilisateur
             choixUtilisateur = ""
 
             # Créer ou demande l'écrasement du fichier CSV de résultats
             try:
-                resultFile = open("Résultats - " + FICHIER_CSV, 'x')
+                resultFile = open("Résultats - " + FICHIER_CSV, 'x', encoding='utf-8')
                 resultFile.close()
             
             except Exception as e:
@@ -125,7 +125,7 @@ if __name__ == '__main__':
                     exit()
 
                 if choixUtilisateur == "Oui":
-                    resultFile = open("Résultats - " + FICHIER_CSV, 'w')
+                    resultFile = open("Résultats - " + FICHIER_CSV, 'w', encoding='utf-8')
                     resultFile.close()
                     choixUtilisateur = ""
 
@@ -273,7 +273,7 @@ if __name__ == '__main__':
                         print("Ajout des PDFs au mail...")
                         try:
                             for PDFPath, PDFName in PDFFILES.items():
-                                with open(PDFPath, 'rb') as file_reader:
+                                with open(PDFPath, 'rb', encoding='utf-8') as file_reader:
                                     file_data = file_reader.read()
                                     mail.add_attachment(file_data, maintype='application', subtype='pdf', filename=PDFName)
 
