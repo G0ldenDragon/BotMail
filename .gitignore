@@ -1,0 +1,11 @@
+# Librairies
+.venv/
+
+# PyCharm IDE
+.idea/
+
+# Personnal documents
+test_documents/
+
+# Password and personnal informations
+/.env

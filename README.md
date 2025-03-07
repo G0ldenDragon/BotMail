@@ -1,25 +1,27 @@
 # Utilisation de BotMail
 
 ### Fonctionnement
-
 BotMail va, à partir d'un fichier CSV renseignant le nom et l'email de l'entreprise, modifier la Lettre de Motivation (en ".docx") et envoyer automatiquement des mails.
 Puis il va imprimer sous format PDF la Lettre de Motivation et le joindre en tant que document au mail.
 Il est possible d'ajouter d'autres documents, tous uniquement sous format PDF.
-Chaque problème rencontrer va, par sécurité, faire stopper le programme.
+Chaque problème rencontré va, par sécurité, faire s'arrêter le programme.
 Une demande via le CMD permet de choisir si on veut effectivement envoyé ce mail ou non permettant au préalable de s'assurer que la Lettre de Motivation à bien été modifier.
 
 ### Version de Python
-
 La version utilisée pour la création de ce Bot est Python 3.9.13
 
-### Packages
+### Rappels d'utilisation
+- `git clone https://github.com/G0ldenDragon/BotMail.git` (Permet l'importation du projet)
+- `.venv\Scripts\activate` (Permet l'activation de .venv)
 
-- pip freeze > uninstallation.txt
-- pip uninstall -r uninstallation.txt -y
-- pip install -r ./requirements.txt
+### Installation des dépendances safe
+``` Bash 
+pip freeze > uninstallation.txt
+pip uninstall -r uninstallation.txt -y
+pip install -r ./requirements.txt
+```
 
 ### Configuration Nécessaire
-
 - Fichier CSV
     - Le nom du fichier CSV doit comprendre ".csv".
     - Un format de CSV particulier :
@@ -56,7 +58,6 @@ La version utilisée pour la création de ce Bot est Python 3.9.13
 
 ### Constantes à définir
 ##### CSV
-
 - FICHIER_CSV : Le chemin d'accès vers un fichier ".csv" respectant la configuration nécessaire.
     ``` Python
     r"path/to/Adresses.csv"
@@ -113,3 +114,7 @@ La version utilisée pour la création de ce Bot est Python 3.9.13
     ``` Python
     r"Candidature Spontanée pour Job Étudiant"
     ```
+
+### Failles et modifications trouvées
+- La lecture des fichiers CSV est facilement sujet à la casse. (Mise à jour vers la librairie Panda envisagé)
+- Correction de l'interface IHM dans le terminal nécessaire.

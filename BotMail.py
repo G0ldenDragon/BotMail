@@ -1,26 +1,31 @@
-# !!!!!!! Le CSV doit être formater sous cette forme !!!!!!!!!!!!!
+import os
+from dotenv import load_dotenv
+
+DOCUMENTS_PATH = "test_documents/"
+load_dotenv()
+
+# !!!!!!! Le CSV doit être formaté sous cette forme !!!!!!!!!!!!!
 NOM_COLONNE = ["envoiePrecedent", "nomEntreprise", "emailEntreprise", "adresseEntreprise", "telephoneEntreprise"]
-FICHIER_CSV = r"botmail.csv"
+FICHIER_CSV = os.getenv("FICHIER_CSV")
 
 # !!!!!!! Le nom de l'entreprise doit être remplacée par "XXN" !!!!!!!!!!!!!
 # !!!!!!! L'adresse de l'entreprise doit être remplacée par "XXA" !!!!!!!!!!!!!
 # !!!!!!! Le numéro de téléphone de l'entreprise doit être remplacée par "XXT" !!!!!!!!!!!!!
-LETTRE_MOTIVATION = r"path/to/Lettre de Motivation.docx"
-LETTRE_MOTIVATION_FINALE = r"Lettre de Motivation Finale.docx"
-LETTRE_MOTIVATION_PDF = r"Lettre de Motivation Imprimer.pdf"
-LIBRE_OFFICE_PATH = r"path\to\LibreOffice\program\soffice.exe"
+LETTRE_MOTIVATION = DOCUMENTS_PATH + os.getenv("LETTRE_MOTIVATION")
+LETTRE_MOTIVATION_FINALE = DOCUMENTS_PATH + os.getenv("LETTRE_MOTIVATION_FINALE")
+LETTRE_MOTIVATION_PDF = DOCUMENTS_PATH + os.getenv("LETTRE_MOTIVATION_PDF")
+LIBRE_OFFICE_PATH = os.getenv("LIBRE_OFFICE_PATH")
 
-EMAIL_ENVOYEUR = r"example.email@gmail.com"
-EMAIL_CONTENU = r"path/to/the.Message.txt"
-EMAIL_SUJET = r"Candidature Spontanée pour Job Étudiant"
+EMAIL_ENVOYEUR = os.getenv("EMAIL_ENVOYEUR")
+EMAIL_CONTENU = DOCUMENTS_PATH + os.getenv("EMAIL_CONTENU")
+EMAIL_SUJET = os.getenv("EMAIL_SUJET")
 # !!!!!!! Il doit être obtenu depuis le mail utilisé, un accès autorisé !!!!!!!
-MDP_APPLICATION = r"some thing here code"
+MDP_APPLICATION = os.getenv("MDP_APPLICATION")
 
 # !!!!!!! Liste des fichiers PDFs à envoyé et ajout du nom voulu pour l'envoi !!!!!!!!!
 PDFFILES = {
     LETTRE_MOTIVATION_PDF : LETTRE_MOTIVATION_PDF,
-    r"path/to/the/file.pdf" : r"name of the attachment.pdf",
-    r"second/path/to/the/file.pdf" : r"name of the second attachment.pdf"
+    os.getenv("CV_PDF") : r"BIGOTTE Owenn - Curriculum Vitae (CV).pdf"
 }
 
 CONFIGURATION_STMP = {
@@ -45,7 +50,7 @@ CONFIGURATION_STMP = {
 def confirmationUtilisateur(messageChoix):
     messageChoix += "(N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n"
     confirmation = ["Oui", "Oui pour Tout", "Non", "Stop"]
-    choixUtilisateur = ''
+    choixUtilisateur = ""
 
     for index, choix in enumerate(confirmation):
         messageChoix += f'{index+1}) {choix}\n'
@@ -68,17 +73,17 @@ def resultatCSV(resultat, ligne):
         adresseEntreprise = ligne.get("adresseEntreprise")
         telephoneEntreprise = ligne.get("telephoneEntreprise")
 
-        with open("Résultats - " + FICHIER_CSV, 'a', encoding='utf-8') as CSV_file:
+        with open(DOCUMENTS_PATH + "Résultats - " + FICHIER_CSV, 'a', encoding='utf-8') as CSV_file:
             writer = DictWriter(CSV_file, fieldnames=NOM_COLONNE)
 
             writer.writerow({
-                "envoiePrecedent": resultat, 
+                "envoiePrecedent": resultat,
                 "nomEntreprise" : nomEntreprise,
                 "emailEntreprise" : emailEntreprise,
                 "adresseEntreprise" : adresseEntreprise,
                 "telephoneEntreprise" : telephoneEntreprise
-                })              
-                                
+            })
+
     except Exception as e:
         print("ERREUR : Une erreur durant l'enregistrement du résultat s'est produite : \n", e)
         exit()
@@ -92,22 +97,22 @@ if __name__ == '__main__':
         import os
 
         # Vérification du CSV
-        if os.stat(FICHIER_CSV).st_size == 0:
+        if os.stat(DOCUMENTS_PATH + FICHIER_CSV).st_size == 0:
             print("ERREUR : Le fichier CSV est vide.")
 
         # Lecture et extractions des données du CSV
-        with open(FICHIER_CSV, 'r', encoding='utf-8') as CSVFile:
-            
+        with open(DOCUMENTS_PATH + FICHIER_CSV, 'r', encoding='utf-8') as CSVFile:
+
             # Définition du choix utilisateur
             choixUtilisateur = ""
 
             # Créer ou demande l'écrasement du fichier CSV de résultats
             try:
-                resultFile = open("Résultats - " + FICHIER_CSV, 'x', encoding='utf-8')
+                resultFile = open(DOCUMENTS_PATH + "Résultats - " + FICHIER_CSV, 'x', encoding='utf-8')
                 resultFile.close()
-            
+
             except Exception as e:
-                messageChoix = ("Le fichier --Résultats - " + FICHIER_CSV + "-- va être écrasé, voulez-vous continuer ?\n")
+                messageChoix = ("Le fichier --" + DOCUMENTS_PATH + "Résultats - " + FICHIER_CSV + "-- va être écrasé, voulez-vous continuer ?\n")
                 confirmation = ["Oui", "Non"]
 
                 for index, choix in enumerate(confirmation):
@@ -117,7 +122,7 @@ if __name__ == '__main__':
 
                 while choixUtilisateur not in confirmation:
                     choixUtilisateur = input(messageChoix)
-                
+
                 print()
 
                 if choixUtilisateur == "Non":
@@ -125,14 +130,15 @@ if __name__ == '__main__':
                     exit()
 
                 if choixUtilisateur == "Oui":
-                    resultFile = open("Résultats - " + FICHIER_CSV, 'w', encoding='utf-8')
+                    resultFile = open(DOCUMENTS_PATH + "Résultats - " + FICHIER_CSV, 'w', encoding='utf-8')
                     resultFile.close()
                     choixUtilisateur = ""
 
             # Chaque colonne d'une ligne est définie comme suis 
-            données = DictReader(CSVFile, fieldnames = NOM_COLONNE)
+            donnees = DictReader(CSVFile, fieldnames = NOM_COLONNE, delimiter=';')
 
-            for ligne in données:
+            for ligne in donnees:
+                print(ligne)
                 envoiePrecedent = ligne.get("envoiePrecedent")
                 nomEntreprise = ligne.get("nomEntreprise").rstrip()
                 emailEntreprise = ligne.get("emailEntreprise").lower().rstrip()
@@ -143,8 +149,8 @@ if __name__ == '__main__':
 
                 if (validate_email(emailEntreprise)):
 
-# -------------------------------------------
-# Modification Docx
+                    # -------------------------------------------
+                    # Modification Docx
 
                     from docx import Document
 
@@ -153,7 +159,7 @@ if __name__ == '__main__':
 
                     # Modification du Docx en fonction des noms des entreprises
                     print("Modification...")
-                    try:                    
+                    try:
                         motivationLetter = Document(LETTRE_MOTIVATION)
                         for paragraph in motivationLetter.paragraphs:
                             # Remplacement du Nom de l'entreprise
@@ -191,8 +197,8 @@ if __name__ == '__main__':
                         resultatCSV("! Modification Lettre de Motivation !", ligne)
                         exit()
 
-# -------------------------------------------
-# Création PDF
+                    # -------------------------------------------
+                    # Création PDF
 
                     import subprocess
 
@@ -200,34 +206,36 @@ if __name__ == '__main__':
                     print("Conversion...")
                     try:
                         subprocess.run(
-                        [
-                            LIBRE_OFFICE_PATH, 
-                            "--headless", 
-                            "--convert-to", 
-                            "pdf", 
-                            LETTRE_MOTIVATION_FINALE, 
-                            "--outdir", 
-                            os.path.dirname(LETTRE_MOTIVATION_PDF)
-                        ])
+                            [
+                                LIBRE_OFFICE_PATH,
+                                "--headless",
+                                "--convert-to",
+                                "pdf",
+                                LETTRE_MOTIVATION_FINALE,
+                                "--outdir",
+                                os.path.dirname(LETTRE_MOTIVATION_PDF)
+                            ])
 
                     except Exception as e:
                         print("ERREUR : Une erreur durant la conversion du document " + LETTRE_MOTIVATION_FINALE + " s'est produite : \n", e)
                         resultatCSV("! Conversion en PDF !", ligne)
                         exit()
 
-# -------------------------------------------
-# Envoie des mails
+                    # -------------------------------------------
+                    # Envoie des mails
 
                     # Choix de l'utilisateur
+                    choixUtilisateur = confirmationUtilisateur("Voulez-vous envoyer ce mail ?")
+
                     if choixUtilisateur != "Oui pour Tout":
-                    
+
                         if envoiePrecedent == "":
                             messageChoix = "\nVoulez-vous envoyer ce mail à --" + nomEntreprise + "-- ?\n"
                             choixUtilisateur = confirmationUtilisateur(messageChoix)
-                    
+
                         if envoiePrecedent == "Envoyé !":
-                                messageChoix = "Un mail à déjà été envoyé à --" + nomEntreprise + "--, voulez-vous en renvoyer un ?\n"
-                                choixUtilisateur = confirmationUtilisateur(messageChoix)
+                            messageChoix = "Un mail à déjà été envoyé à --" + nomEntreprise + "--, voulez-vous en renvoyer un ?\n"
+                            choixUtilisateur = confirmationUtilisateur(messageChoix)
 
                     # Si Stop : Arrêt du programme
                     if choixUtilisateur == "Stop":
@@ -237,9 +245,9 @@ if __name__ == '__main__':
                     # Si Non : Entreprise suivante
                     if choixUtilisateur == "Non":
                         print("Entreprise suivante...\n")
-                    
+
                     # Si Oui : Envoie d'un mail
-                    else:
+                    if choixUtilisateur == "Oui":
                         import smtplib
                         from email.message import EmailMessage
 
@@ -273,7 +281,7 @@ if __name__ == '__main__':
                         print("Ajout des PDFs au mail...")
                         try:
                             for PDFPath, PDFName in PDFFILES.items():
-                                with open(PDFPath, 'rb', encoding='utf-8') as file_reader:
+                                with open(PDFPath, 'rb') as file_reader:
                                     file_data = file_reader.read()
                                     mail.add_attachment(file_data, maintype='application', subtype='pdf', filename=PDFName)
 
@@ -323,7 +331,7 @@ if __name__ == '__main__':
                     print("ERREUR : L'email --" + emailEntreprise + "-- de --" + nomEntreprise + "-- n'est pas valide.\n")
                     resultatCSV("! Email Invalide !", ligne)
 
-    except FileNotFoundError:
+    except FileNotFoundError as e:
         print("ERREUR : Le fichier CSV n'est pas trouvé à partir de ce chemin d'accès.")
 
     except Exception as e:
