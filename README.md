@@ -64,12 +64,12 @@ pip install -r ./requirements.txt
     ```
 
 ##### Lettre de Motivation
-- MOTIVATION_LETTER : Le chemin d'accès vers la lettre de motivation ".docx" respectant la configuration nécessaire.
+- MOTIVATION_LETTER_PATH : Le chemin d'accès vers la lettre de motivation ".docx" respectant la configuration nécessaire.
     ``` Python
     r"path/to/Lettre de Motivation.docx"
     ```
 
-- MOTIVATION_LETTER_FINALE : La définition du nom de la lettre de motivation modifiée ".docx" respectant la configuration nécessaire.
+- MOTIVATION_LETTER_PATH_FINAL : La définition du nom de la lettre de motivation modifiée ".docx" respectant la configuration nécessaire.
     ``` Python
     r"Lettre de Motivation Finale.docx"
     ```
@@ -80,7 +80,7 @@ pip install -r ./requirements.txt
     r"path\to\LibreOffice\program\soffice.exe"
     ```
 
-- MOTIVATION_LETTER_PDF : La définition du nom de la lettre de motivation imprimer ".pdf" respectant la configuration nécessaire.
+- MOTIVATION_LETTER_PATH_PDF : La définition du nom de la lettre de motivation imprimer ".pdf" respectant la configuration nécessaire.
     ``` Python
     r"Lettre de Motivation Imprimer.pdf"
     ```
@@ -88,7 +88,7 @@ pip install -r ./requirements.txt
 - Les chemins d'accès vers les fichiers PDFs à joindre avec le nom à utiliser en JSON.
     ``` Python (JSON)
     PDFFILES = {
-        MOTIVATION_LETTER_PDF : MOTIVATION_LETTER_PDF,
+        MOTIVATION_LETTER_PATH_PDF : MOTIVATION_LETTER_PATH_PDF,
         r"path/to/the/file.pdf" : r"name of the attachment.pdf",
         r"second/path/to/the/file.pdf" : r"name of the second attachment.pdf"
     }
@@ -100,17 +100,17 @@ pip install -r ./requirements.txt
     r"some thing here code"
     ```
 
-- EMAIL_ENVOYEUR : Email de l'envoyeur 
+- EMAIL_SENDER : Email de l'envoyeur 
     ``` Python
     r"example.email@gmail.com"
     ```
 
-- EMAIL_CONTENU : Contenu du mail
+- EMAIL_CONTENT_PATH : Contenu du mail
     ``` Python
     r"path/to/the.Message.txt"
     ```
 
-- EMAIL_SUJET : Sujet du mail
+- EMAIL_SUBJECT : Sujet du mail
     ``` Python
     r"Candidature Spontanée pour Job Étudiant"
     ```

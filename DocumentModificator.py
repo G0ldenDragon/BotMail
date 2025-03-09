@@ -10,15 +10,12 @@ from UserInterface import resultatCSV
 
 # ---------------------------------------
 
-# Chemin vers le dossier où est stockée la plupart des fichiers
-DOCUMENTS_PATH = os.getenv("DOCUMENTS_PATH")
-
 # !!!!!!! Le nom de l'entreprise doit être remplacée par "XXN" !!!!!!!!!!!!!
 # !!!!!!! L'adresse de l'entreprise doit être remplacée par "XXA" !!!!!!!!!!!!!
 # !!!!!!! Le numéro de téléphone de l'entreprise doit être remplacée par "XXT" !!!!!!!!!!!!!
-MOTIVATION_LETTER = DOCUMENTS_PATH + os.getenv("MOTIVATION_LETTER")
-MOTIVATION_LETTER_FINALE = DOCUMENTS_PATH + os.getenv("MOTIVATION_LETTER_FINALE")
-MOTIVATION_LETTER_PDF = DOCUMENTS_PATH + os.getenv("MOTIVATION_LETTER_PDF")
+MOTIVATION_LETTER_PATH = os.getenv("MOTIVATION_LETTER_PATH")
+MOTIVATION_LETTER_PATH_FINAL = os.getenv("MOTIVATION_LETTER_PATH_FINAL")
+MOTIVATION_LETTER_PATH_PDF = os.getenv("MOTIVATION_LETTER_PATH_PDF")
 LIBRE_OFFICE_PATH = os.getenv("LIBRE_OFFICE_PATH")
 
 # ---------------------------------------
@@ -35,7 +32,7 @@ class DocumentModificator:
 
     def documentModificator(self):
         try:
-            motivationLetter = Document(MOTIVATION_LETTER)
+            motivationLetter = Document(MOTIVATION_LETTER_PATH)
             for paragraph in motivationLetter.paragraphs:
                 # Remplacement du Nom de l'entreprise
                 if "XXN" in paragraph.text and self.nomEntreprise != "":
@@ -63,10 +60,10 @@ class DocumentModificator:
                     translatedCurrentDate = time.strftime("%d %B %Y", currentDate)
                     paragraph.text = paragraph.text.replace("XXD", translatedCurrentDate.title())
 
-            motivationLetter.save(MOTIVATION_LETTER_FINALE)
+            motivationLetter.save(MOTIVATION_LETTER_PATH_FINAL)
 
         except Exception as e:
-            print("ERREUR : Une erreur durant la modification du document " + MOTIVATION_LETTER + " s'est produite : \n", e)
+            print("ERREUR : Une erreur durant la modification du document " + MOTIVATION_LETTER_PATH + " s'est produite : \n", e)
             resultatCSV("! Modification Lettre de Motivation !", self.ligne)
             exit()
 
@@ -79,12 +76,12 @@ class DocumentModificator:
                     "--headless",
                     "--convert-to",
                     "pdf",
-                    MOTIVATION_LETTER_FINALE,
+                    MOTIVATION_LETTER_PATH_FINAL,
                     "--outdir",
-                    os.path.dirname(MOTIVATION_LETTER_PDF)
+                    os.path.dirname(MOTIVATION_LETTER_PATH_PDF)
                 ])
 
         except Exception as e:
-            print("ERREUR : Une erreur durant la conversion du document " + MOTIVATION_LETTER_FINALE + " s'est produite : \n", e)
+            print("ERREUR : Une erreur durant la conversion du document " + MOTIVATION_LETTER_PATH_FINAL + " s'est produite : \n", e)
             resultatCSV("! Conversion en PDF !", self.ligne)
             exit()

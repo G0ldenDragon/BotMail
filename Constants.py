@@ -15,4 +15,5 @@ CONFIGURATION_STMP = {
     }
 }
 
+# !!!!!!! Le fichier CSV doit être formaté sous cette forme !!!!!!!!!!!!!
 NOM_COLONNE = ["envoiePrecedent", "nomEntreprise", "emailEntreprise", "adresseEntreprise", "telephoneEntreprise"]

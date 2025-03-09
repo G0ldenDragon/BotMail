@@ -1,19 +1,22 @@
 import os
 from csv import DictReader, DictWriter, writer as csv_writer
 from dotenv import load_dotenv
+import ntpath
 load_dotenv()
 
 import Constants
 
 # ---------------------------------------
 
-# Chemin vers le dossier où est stockée la plupart des fichiers
-DOCUMENTS_PATH = os.getenv("DOCUMENTS_PATH")
-
-CSV_FILE_PATH = os.getenv("CSV_FILE_PATH")
+CSV_RESULT_FILE_PATH = os.getenv("CSV_RESULT_FILE_PATH")
 
 # ---------------------------------------
 
+def nomFichierDuChemin(chemin):
+    chemin, fichier = ntpath.split(chemin)
+    return fichier or ntpath.basename(chemin)
+
+# ---------------------------------------
 # Choix de l'utilisateur
 def confirmationUtilisateur(messageChoix, confirmation):
     choixUtilisateur = ""
@@ -39,7 +42,7 @@ def resultatCSV(resultat, ligne):
         adresseEntreprise = ligne.get("adresseEntreprise")
         telephoneEntreprise = ligne.get("telephoneEntreprise")
 
-        with open(DOCUMENTS_PATH + "Résultats - " + CSV_FILE_PATH, 'a', encoding='utf-8') as CSV_file:
+        with open(CSV_RESULT_FILE_PATH, 'a', encoding='utf-8') as CSV_file:
             writer = DictWriter(CSV_file, fieldnames=Constants.NOM_COLONNE)
 
             writer.writerow({

@@ -5,17 +5,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from DocumentModificator import DocumentModificator
-from UserInterface import confirmationUtilisateur, resultatCSV
+from UserInterface import confirmationUtilisateur, resultatCSV, nomFichierDuChemin
 from EmailSender import EmailSender
 import Constants
 
 # ---------------------------------------
 
-# Chemin vers le dossier où est stocké la plupart des fichiers
-DOCUMENTS_PATH = os.getenv("DOCUMENTS_PATH")
-
-# !!!!!!! Le CSV doit être formaté sous cette forme !!!!!!!!!!!!!
+# Chemin d'accès vers le fichier CSV
 CSV_FILE_PATH = os.getenv("CSV_FILE_PATH")
+CSV_RESULT_FILE_PATH = os.getenv("CSV_RESULT_FILE_PATH")
 
 # ---------------------------------------
 
@@ -23,23 +21,23 @@ CSV_FILE_PATH = os.getenv("CSV_FILE_PATH")
 if __name__ == '__main__':
     try:
         # Vérification du CSV
-        if os.stat(DOCUMENTS_PATH + CSV_FILE_PATH).st_size == 0:
+        if os.stat(CSV_FILE_PATH).st_size == 0:
             print("ERREUR : Le fichier CSV est vide.")
 
         # Lecture et extractions des données du CSV
-        with open(DOCUMENTS_PATH + CSV_FILE_PATH, 'r', encoding='utf-8') as CSVFile:
+        with open(CSV_FILE_PATH, 'r', encoding='utf-8') as CSVFile:
 
             # Définition du choix utilisateur
             choixUtilisateur = ""
 
             # Créer ou demande l'écrasement du fichier CSV résultant
             try:
-                resultFile = open(DOCUMENTS_PATH + "Résultats - " + CSV_FILE_PATH, 'x', encoding='utf-8')
+                resultFile = open(CSV_RESULT_FILE_PATH, 'x', encoding='utf-8')
                 resultFile.close()
 
             except Exception as e:
                 choixUtilisateur = confirmationUtilisateur(
-                    "Le fichier --" + DOCUMENTS_PATH + "Résultats - " + CSV_FILE_PATH + "-- va être écrasé, voulez-vous continuer ?\n",
+                    "Le fichier --" + nomFichierDuChemin(CSV_RESULT_FILE_PATH) + "-- va être écrasé, voulez-vous continuer ?\n",
                     ["Oui", "Non"]
                 )
 
@@ -48,7 +46,7 @@ if __name__ == '__main__':
                     exit()
 
                 if choixUtilisateur == "Oui":
-                    resultFile = open(DOCUMENTS_PATH + "Résultats - " + CSV_FILE_PATH, 'w', encoding='utf-8')
+                    resultFile = open(CSV_RESULT_FILE_PATH, 'w', encoding='utf-8')
                     resultFile.close()
                     choixUtilisateur = ""
 
