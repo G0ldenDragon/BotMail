@@ -58,18 +58,18 @@ pip install -r ./requirements.txt
 
 ### Constantes à définir
 ##### CSV
-- FICHIER_CSV : Le chemin d'accès vers un fichier ".csv" respectant la configuration nécessaire.
+- CSV_FILE_PATH : Le chemin d'accès vers un fichier ".csv" respectant la configuration nécessaire.
     ``` Python
     r"path/to/Adresses.csv"
     ```
 
 ##### Lettre de Motivation
-- LETTRE_MOTIVATION : Le chemin d'accès vers la lettre de motivation ".docx" respectant la configuration nécessaire.
+- MOTIVATION_LETTER : Le chemin d'accès vers la lettre de motivation ".docx" respectant la configuration nécessaire.
     ``` Python
     r"path/to/Lettre de Motivation.docx"
     ```
 
-- LETTRE_MOTIVATION_FINALE : La définition du nom de la lettre de motivation modifiée ".docx" respectant la configuration nécessaire.
+- MOTIVATION_LETTER_FINALE : La définition du nom de la lettre de motivation modifiée ".docx" respectant la configuration nécessaire.
     ``` Python
     r"Lettre de Motivation Finale.docx"
     ```
@@ -80,7 +80,7 @@ pip install -r ./requirements.txt
     r"path\to\LibreOffice\program\soffice.exe"
     ```
 
-- LETTRE_MOTIVATION_PDF : La définition du nom de la lettre de motivation imprimer ".pdf" respectant la configuration nécessaire.
+- MOTIVATION_LETTER_PDF : La définition du nom de la lettre de motivation imprimer ".pdf" respectant la configuration nécessaire.
     ``` Python
     r"Lettre de Motivation Imprimer.pdf"
     ```
@@ -88,7 +88,7 @@ pip install -r ./requirements.txt
 - Les chemins d'accès vers les fichiers PDFs à joindre avec le nom à utiliser en JSON.
     ``` Python (JSON)
     PDFFILES = {
-        LETTRE_MOTIVATION_PDF : LETTRE_MOTIVATION_PDF,
+        MOTIVATION_LETTER_PDF : MOTIVATION_LETTER_PDF,
         r"path/to/the/file.pdf" : r"name of the attachment.pdf",
         r"second/path/to/the/file.pdf" : r"name of the second attachment.pdf"
     }

@@ -3,16 +3,19 @@ from csv import DictReader, DictWriter, writer as csv_writer
 from dotenv import load_dotenv
 load_dotenv()
 
+import Constants
+
+# ---------------------------------------
 
 # Chemin vers le dossier où est stockée la plupart des fichiers
 DOCUMENTS_PATH = os.getenv("DOCUMENTS_PATH")
-FICHIER_CSV = os.getenv("FICHIER_CSV")
 
+CSV_FILE_PATH = os.getenv("CSV_FILE_PATH")
+
+# ---------------------------------------
 
 # Choix de l'utilisateur
-def confirmationUtilisateur(messageChoix):
-    messageChoix += "(N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n"
-    confirmation = ["Oui", "Oui pour Tout", "Non", "Stop"]
+def confirmationUtilisateur(messageChoix, confirmation):
     choixUtilisateur = ""
 
     for index, choix in enumerate(confirmation):
@@ -29,15 +32,15 @@ def confirmationUtilisateur(messageChoix):
 # ---------------------
 # Ajout dans le fichier CSV Résultat
 
-def resultatCSV(resultat, ligne, nomColonne):
+def resultatCSV(resultat, ligne):
     try:
         nomEntreprise = ligne.get("nomEntreprise").rstrip()
         emailEntreprise = ligne.get("emailEntreprise").lower().rstrip()
         adresseEntreprise = ligne.get("adresseEntreprise")
         telephoneEntreprise = ligne.get("telephoneEntreprise")
 
-        with open(DOCUMENTS_PATH + "Résultats - " + FICHIER_CSV, 'a', encoding='utf-8') as CSV_file:
-            writer = DictWriter(CSV_file, fieldnames=nomColonne)
+        with open(DOCUMENTS_PATH + "Résultats - " + CSV_FILE_PATH, 'a', encoding='utf-8') as CSV_file:
+            writer = DictWriter(CSV_file, fieldnames=Constants.NOM_COLONNE)
 
             writer.writerow({
                 "envoiePrecedent": resultat,

@@ -1,11 +1,17 @@
+# Cache de l'utilisation du code
+/__pycache__/
+
 # Librairies
-.venv/
+/venv/
 
 # PyCharm IDE
-.idea/
+/.idea/
 
 # Personnal documents
-test_documents/
+/test_documents/
 
 # Password and personnal informations
 /.env
+
+#-------------------
+/PathAndFilename.py
