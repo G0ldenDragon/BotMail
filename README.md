@@ -54,7 +54,7 @@ pip install -r ./requirements.txt
         - yahoo
         - outlook
 
-    - Un code d'application permettant au code d'utiliser l'email de l'envoyeur.
+    - Un code d'application permettant au code d'utiliser l'email de l'envoyeur. (Trouvé dans Google dans "Mots de passe des applications")
 
 ### Constantes à définir
 ##### CSV
