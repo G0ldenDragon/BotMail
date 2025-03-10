@@ -54,5 +54,5 @@ def resultatCSV(resultat, ligne):
             })
 
     except Exception as e:
-        print("ERREUR : Une erreur durant l'enregistrement du résultat s'est produite : \n", e)
+        print("ERREUR : Une erreur durant l'enregistrement des résultats s'est produite : \n", e)
         exit()
