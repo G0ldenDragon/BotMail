@@ -2,7 +2,7 @@ import os
 import smtplib
 from email.message import EmailMessage
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(dotenv_path=".env")
 
 from UserInterface import resultatCSV
 import Constants
@@ -23,90 +23,80 @@ MDP_APPLICATION = os.getenv("MDP_APPLICATION")
 
 # ---------------------------------------
 
-class EmailSender:
-    def __init__(self, ligne):
-        self.ligne = ligne
-        self.envoiePrecedent = ligne.get("envoiePrecedent")
-        self.nomEntreprise = ligne.get("nomEntreprise").rstrip()
-        self.emailEntreprise = ligne.get("emailEntreprise").lower().rstrip()
-        self.adresseEntreprise = ligne.get("adresseEntreprise")
-        self.telephoneEntreprise = ligne.get("telephoneEntreprise")
+def send (dataSerializer):
+    # Liste des adresses à qui envoyer le mail
+    receveurs = [dataSerializer.emailEntreprise]
 
+    # Construction du mail
+    print("Construction du mail...")
+    mail = EmailMessage()
 
-    def send (self):
-        # Liste des adresses à qui envoyer le mail
-        receveurs = [self.emailEntreprise]
+    mail['From'] = EMAIL_SENDER
+    mail['To'] = ', '.join(receveurs)
+    mail['Subject'] = EMAIL_SUBJECT
 
-        # Construction du mail
-        print("Construction du mail...")
-        mail = EmailMessage()
+    # Récupération des données du contenu du mail
+    print("Ajout du corps du mail...")
+    try:
+        # Ouvre et lis les données binaires du .txt pour écrire le corps de mail
+        with open(EMAIL_CONTENT_PATH, 'r', encoding='utf-8') as file_reader:
+            corps = file_reader.read()
 
-        mail['From'] = EMAIL_SENDER
-        mail['To'] = ', '.join(receveurs)
-        mail['Subject'] = EMAIL_SUBJECT
+    except Exception as e:
+        print("ERREUR : Une erreur durant la lecture du fichier --" + EMAIL_CONTENT_PATH + "-- contenant le corps du mail s'est produite : \n", e)
+        resultatCSV("! Corps du Texte !", dataSerializer)
+        exit()
 
-        # Récupération des données du contenu du mail
-        print("Ajout du corps du mail...")
-        try:
-            # Ouvre et lis les données binaires du .txt pour écrire le corps de mail
-            with open(EMAIL_CONTENT_PATH, 'r', encoding='utf-8') as file_reader:
-                corps = file_reader.read()
+    # Ajout du corps du mail
+    mail.set_content(corps)
 
-        except Exception as e:
-            print("ERREUR : Une erreur durant la lecture du fichier --" + EMAIL_CONTENT_PATH + "-- contenant le corps du mail s'est produite : \n", e)
-            resultatCSV("! Corps du Texte !", self.ligne)
-            exit()
+    # Récupération et ajout des fichiers PDFs au mail
+    print("Ajout des PDFs au mail...")
+    try:
+        for PDFPath, PDFName in PDFFILES.items():
+            with open(PDFPath, 'rb') as file_reader:
+                file_data = file_reader.read()
+                mail.add_attachment(file_data, maintype='application', subtype='pdf', filename=PDFName)
 
-        # Ajout du corps du mail
-        mail.set_content(corps)
+    except Exception as e:
+        print("ERREUR : Une erreur durant la lecture du fichier contenant le corps du mail --" + EMAIL_CONTENT_PATH + "-- s'est produite : \n", e)
+        resultatCSV("! Lecture des PDFs !", dataSerializer)
+        exit()
 
-        # Récupération et ajout des fichiers PDFs au mail
-        print("Ajout des PDFs au mail...")
-        try:
-            for PDFPath, PDFName in PDFFILES.items():
-                with open(PDFPath, 'rb') as file_reader:
-                    file_data = file_reader.read()
-                    mail.add_attachment(file_data, maintype='application', subtype='pdf', filename=PDFName)
+    # Text: maintype='text', subtype='plain'
+    # HTML: maintype='text', subtype='html'
+    # Images: maintype='image', subtype='jpeg' or maintype='image', subtype='png'
+    # PDFs: maintype='application', subtype='pdf'
 
-        except Exception as e:
-            print("ERREUR : Une erreur durant la lecture du fichier contenant le corps du mail --" + EMAIL_CONTENT_PATH + "-- s'est produite : \n", e)
-            resultatCSV("! Lecture des PDFs !", self.ligne)
-            exit()
+    # Construction de l'envoi du mail
+    try:
+        # Définition du serveur
+        smtp_server = ""
 
-        # Text: maintype='text', subtype='plain'
-        # HTML: maintype='text', subtype='html'
-        # Images: maintype='image', subtype='jpeg' or maintype='image', subtype='png'
-        # PDFs: maintype='application', subtype='pdf'
+        # Trouve la configuration adaptée au mail
+        print("Recherche de la configuration adaptée à l'adresse mail de l'envoyeur...")
+        for provider, config in Constants.CONFIGURATION_STMP.items():
+            if provider in EMAIL_SENDER:
+                smtp_server = config["smtp_server"]
+                smtp_port = config["smtp_port"]
+                break
 
-        # Construction de l'envoi du mail
-        try:
-            # Définition du serveur
-            smtp_server = ""
+        # Si le serveur est toujours vide, aucune configuration n'a été trouvée.
+        if smtp_server == "":
+            raise Exception("L'adresse mail n'a pas été reconnue, la configuration ne peut être faîtes.")
 
-            # Trouve la configuration adaptée au mail
-            print("Recherche de la configuration adaptée à l'adresse mail de l'envoyeur...")
-            for provider, config in Constants.CONFIGURATION_STMP.items():
-                if provider in EMAIL_SENDER:
-                    smtp_server = config["smtp_server"]
-                    smtp_port = config["smtp_port"]
-                    break
+        # Envoie du mail
+        print("Envoie à " + dataSerializer.nomEntreprise + "...")
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            server.login(EMAIL_SENDER, MDP_APPLICATION)
+            server.sendmail(EMAIL_SENDER, receveurs, mail.as_string())
 
-            # Si le serveur est toujours vide, aucune configuration n'a été trouvée.
-            if smtp_server == "":
-                raise Exception("L'adresse mail n'a pas été reconnue, la configuration ne peut être faîtes.")
+            print("Mail envoyé !\n\n")
 
-            # Envoie du mail
-            print("Envoie à " + self.nomEntreprise + "...")
-            with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
-                server.login(EMAIL_SENDER, MDP_APPLICATION)
-                server.sendmail(EMAIL_SENDER, receveurs, mail.as_string())
+            # Enregistrement des résultat dans un CSV annexe.
+            resultatCSV("Envoyé !", dataSerializer)
 
-                print("Mail envoyé !\n\n")
-
-                # Enregistrement des résultat dans un CSV annexe.
-                resultatCSV("Envoyé !", self.ligne)
-
-        except Exception as e:
-            print("ERREUR : Une erreur durant l'envoie du mail s'est produite : \n", e)
-            resultatCSV("! Problème Envoie du Mail !", self.ligne)
-            exit()
+    except Exception as e:
+        print("ERREUR : Une erreur durant l'envoie du mail s'est produite : \n", e)
+        resultatCSV("! Problème Envoie du Mail !", dataSerializer)
+        exit()

@@ -1,8 +1,8 @@
 import os
-from csv import DictReader, DictWriter, writer as csv_writer
-from dotenv import load_dotenv
+import pandas as pd
 import ntpath
-load_dotenv()
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=".env")
 
 import Constants
 
@@ -18,41 +18,32 @@ def nomFichierDuChemin(chemin):
 
 # ---------------------------------------
 # Choix de l'utilisateur
-def confirmationUtilisateur(messageChoix, confirmation):
-    choixUtilisateur = ""
+def confirmationUtilisateur(messageInput, confirmation):
+    userInput = ""
 
     for index, choix in enumerate(confirmation):
-        messageChoix += f'{index+1}) {choix}\n'
+        messageInput += f'{index+1}) {choix}\n'
 
-    messageChoix += '-> '
+    messageInput += '-> '
 
-    while choixUtilisateur not in confirmation:
-        choixUtilisateur = input(messageChoix)
+    while userInput not in confirmation:
+        userInput = input(messageInput)
 
     print("")
-    return choixUtilisateur
+    return userInput
 
 # ---------------------
 # Ajout dans le fichier CSV Résultat
-
-def resultatCSV(resultat, ligne):
+def resultatCSV(resultat, dataSerializer):
     try:
-        nomEntreprise = ligne.get("nomEntreprise").rstrip()
-        emailEntreprise = ligne.get("emailEntreprise").lower().rstrip()
-        adresseEntreprise = ligne.get("adresseEntreprise")
-        telephoneEntreprise = ligne.get("telephoneEntreprise")
-
-        with open(CSV_RESULT_FILE_PATH, 'a', encoding='utf-8') as CSV_file:
-            writer = DictWriter(CSV_file, fieldnames=Constants.NOM_COLONNE)
-
-            writer.writerow({
-                "envoiePrecedent": resultat,
-                "nomEntreprise" : nomEntreprise,
-                "emailEntreprise" : emailEntreprise,
-                "adresseEntreprise" : adresseEntreprise,
-                "telephoneEntreprise" : telephoneEntreprise
-            })
+        newLine = pd.DataFrame([[resultat, dataSerializer.emailEntreprise, dataSerializer.nomEntreprise, dataSerializer.adresseEntreprise, dataSerializer.telephoneEntreprise]], columns=['XXP', 'XXE', 'XXN', 'XXA', 'XXT'])
+        newLine.to_csv(CSV_RESULT_FILE_PATH, mode='a', header=True, index=False)
 
     except Exception as e:
         print("ERREUR : Une erreur durant l'enregistrement des résultats s'est produite : \n", e)
         exit()
+
+# ---------------------
+# Raise une exception de la langue utilisée.
+def ExceptionRaiser(errorMessage: dict):
+    raise Exception(errorMessage[os.getenv("LANGUAGE")])

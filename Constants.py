@@ -1,4 +1,4 @@
-# Configuration en fonction des mails utilisé
+# Configuration en fonction des mails utilisée
 CONFIGURATION_STMP = {
     "gmail" : {
         "smtp_server" : "smtp.gmail.com",
@@ -15,5 +15,5 @@ CONFIGURATION_STMP = {
     }
 }
 
-# !!!!!!! Le fichier CSV doit être formaté sous cette forme !!!!!!!!!!!!!
-NOM_COLONNE = ["envoiePrecedent", "nomEntreprise", "emailEntreprise", "adresseEntreprise", "telephoneEntreprise"]
+# Liste des extensions de fichier valables.
+CORRECT_EXTENSIONS = [".csv", ".xlsx", ".xls", ".ods"]
