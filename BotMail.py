@@ -12,7 +12,6 @@ from DataSerializer import DataSerializer
 from DocumentModificator import documentModificator, documentConvertor
 from UserInterface import confirmationUtilisateur, resultatCSV, nomFichierDuChemin, ExceptionRaiser
 import EmailSender
-import Constants
 
 # ---------------------------------------
 
@@ -28,25 +27,31 @@ if __name__ == '__main__':
     # Extraction et sérialisation des données
     dataSerializer = DataSerializer()
 
-    # Créer ou demande l'écrasement du fichier CSV résultant
-    if not(os.path.exists (CSV_FILE_PATH)):
-        # Créer le fichier de résultat avec les entêtes
-        resultFile = pd.DataFrame(columns=['XXP', 'XXE', 'XXN', 'XXA', 'XXT'])
-        resultFile.to_csv(CSV_RESULT_FILE_PATH, index=False)
-
-    else:
-        userInput = confirmationUtilisateur(
-            "Le fichier --" + nomFichierDuChemin(CSV_RESULT_FILE_PATH) + "-- va être écrasé, voulez-vous continuer ?\n",
-            ["Oui", "Non"]
-        )
-
-        if userInput == "Non":
-            print("Arrêt...")
-            exit()
-
-        if userInput == "Oui":
+    try:
+        # Créer ou demande l'écrasement du fichier CSV résultant
+        if not(os.path.exists (CSV_FILE_PATH)):
+            # Créer le fichier de résultat avec les entêtes
             resultFile = pd.DataFrame(columns=['XXP', 'XXE', 'XXN', 'XXA', 'XXT'])
-            resultFile.to_csv(CSV_RESULT_FILE_PATH, index=False)
+            resultFile.to_csv(CSV_RESULT_FILE_PATH, index=False, sep=';')
+
+        else:
+            userInput = confirmationUtilisateur(
+                "Le fichier --" + nomFichierDuChemin(CSV_RESULT_FILE_PATH) + "-- va être écrasé, voulez-vous continuer ?\n",
+                ["Oui", "Non"]
+            )
+
+            if userInput == "Non":
+                print("Arrêt...")
+                exit()
+
+            if userInput == "Oui":
+                resultFile = pd.DataFrame(columns=['XXP', 'XXE', 'XXN', 'XXA', 'XXT'])
+                resultFile.to_csv(CSV_RESULT_FILE_PATH, index=False, sep=';')
+    except PermissionError as e:
+        ExceptionRaiser({
+            "FR" : "Le fichier donné en argument est ouvert dans un autre programme, impossible de l'ouvrir.",
+            "EN" : "The file provided as an argument is open in another program, it cannot be accessed."
+        })
 
     userInput = ""
     try:

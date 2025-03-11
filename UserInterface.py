@@ -4,8 +4,6 @@ import ntpath
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
 
-import Constants
-
 # ---------------------------------------
 
 CSV_RESULT_FILE_PATH = os.getenv("CSV_RESULT_FILE_PATH")
@@ -37,7 +35,7 @@ def confirmationUtilisateur(messageInput, confirmation):
 def resultatCSV(resultat, dataSerializer):
     try:
         newLine = pd.DataFrame([[resultat, dataSerializer.emailEntreprise, dataSerializer.nomEntreprise, dataSerializer.adresseEntreprise, dataSerializer.telephoneEntreprise]], columns=['XXP', 'XXE', 'XXN', 'XXA', 'XXT'])
-        newLine.to_csv(CSV_RESULT_FILE_PATH, mode='a', header=True, index=False)
+        newLine.to_csv(CSV_RESULT_FILE_PATH, mode='a', header=False, index=False, sep=';')
 
     except Exception as e:
         print("ERREUR : Une erreur durant l'enregistrement des résultats s'est produite : \n", e)
