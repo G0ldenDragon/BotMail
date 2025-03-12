@@ -1,8 +1,7 @@
 import os
-from csv import DictReader, DictWriter, writer as csv_writer
-
 import pandas as pd
 from validate_email import validate_email
+from Constants import COLUMNS
 from dotenv import load_dotenv, set_key
 load_dotenv(dotenv_path=".env")
 # A RETENIR POUR LA CONFIGURATION DE LA LANGUE
@@ -10,7 +9,7 @@ load_dotenv(dotenv_path=".env")
 
 from DataSerializer import DataSerializer
 from DocumentModificator import documentModificator, documentConvertor
-from UserInterface import confirmationUtilisateur, resultatCSV, nomFichierDuChemin, ExceptionRaiser
+from UserInterface import confirmationUtilisateur, resultatCSV, nomFichierDuChemin, ExceptionRaiser, MessagePrinter
 import EmailSender
 
 # ---------------------------------------
@@ -31,7 +30,7 @@ if __name__ == '__main__':
         # Créer ou demande l'écrasement du fichier CSV résultant
         if not(os.path.exists (CSV_FILE_PATH)):
             # Créer le fichier de résultat avec les entêtes
-            resultFile = pd.DataFrame(columns=['XXP', 'XXE', 'XXN', 'XXA', 'XXT'])
+            resultFile = pd.DataFrame(columns = COLUMNS)
             resultFile.to_csv(CSV_RESULT_FILE_PATH, index=False, sep=';')
 
         else:
@@ -41,11 +40,14 @@ if __name__ == '__main__':
             )
 
             if userInput == "Non":
-                print("Arrêt...")
+                MessagePrinter({
+                    "FR" : "Arrêt...",
+                    "EN" : "Shuting down..."
+                })
                 exit()
 
             if userInput == "Oui":
-                resultFile = pd.DataFrame(columns=['XXP', 'XXE', 'XXN', 'XXA', 'XXT'])
+                resultFile = pd.DataFrame(columns = COLUMNS)
                 resultFile.to_csv(CSV_RESULT_FILE_PATH, index=False, sep=';')
     except PermissionError as e:
         ExceptionRaiser({
@@ -69,23 +71,38 @@ if __name__ == '__main__':
             if validate_email(dataSerializer.emailEntreprise):
 
                 # Impression de l'entreprise à qui va être envoyé le mail.
-                print("Destinataire : ---" + dataSerializer.nomEntreprise + "---")
+                MessagePrinter({
+                    "FR" : "Destinataire : ---" + dataSerializer.nomEntreprise + "---",
+                    "EN" : "Recipient : ---" + dataSerializer.nomEntreprise + "---"
+                })
 
                 # -------------------------------------------
                 # Modification Docx
 
                 # Modification du Docx en fonction des noms des entreprises
-                print("Modification...")
+                MessagePrinter({
+                    "FR" : "Modification...",
+                    "EN" : "Modification..."
+                })
                 documentModificator(dataSerializer)
-                print("Modifié !")
+                MessagePrinter({
+                    "FR" : "Modifié !",
+                    "EN" : "Modified !"
+                })
 
                 # -------------------------------------------
                 # Création PDF
 
                 # Conversion du Docx en PDF
-                print("Conversion en PDF...")
+                MessagePrinter({
+                    "FR" : "Conversion en PDF...",
+                    "EN" : "Converting to PDF..."
+                })
                 documentConvertor(dataSerializer)
-                print("Converti !")
+                MessagePrinter({
+                    "FR" : "Converti !",
+                    "EN" : "Converted !"
+                })
 
                 # -------------------------------------------
                 # Envoie des mails
@@ -108,25 +125,43 @@ if __name__ == '__main__':
 
                 # Si Stop : Arrêt du programme
                 if userInput == "Stop":
-                    print("Arrêt...")
+                    MessagePrinter({
+                        "FR" : "Arrêt...",
+                        "EN" : "Shuting down..."
+                    })
                     exit()
 
                 # Si Non : Entreprise suivante
                 if userInput == "Non":
-                    print("Entreprise suivante...\n")
+                    MessagePrinter({
+                        "FR" : "Prochain destinataire...\n",
+                        "EN" : "Next recipient...\n"
+                    })
 
                 # Si Oui : Envoie d'un mail
                 if userInput == "Oui" or userInput == "Oui pour Tout":
                     EmailSender.send(dataSerializer)
 
             else:
-                print("ERREUR : L'email --" + dataSerializer.emailEntreprise + "-- de --" + dataSerializer.nomEntreprise + "-- n'est pas valide.\n")
+                MessagePrinter({
+                    "FR" : "ERREUR : L'email --" + dataSerializer.emailEntreprise + "-- de --" + dataSerializer.nomEntreprise + "-- n'est pas valide.\n",
+                    "EN" : "ERROR : The following email --" + dataSerializer.emailEntreprise + "-- of --" + dataSerializer.nomEntreprise + "-- isn't valid.\n"
+                })
                 resultatCSV("! Email Invalide !", dataSerializer)
 
-        print("Plus aucun destinataire, arrêt...")
+        MessagePrinter({
+            "FR" : "Plus aucun destinataire, arrêt...",
+            "EN" : "No more recipients, shut down..."
+        })
 
     except FileNotFoundError as e:
-        print("ERREUR : Le fichier CSV n'est pas trouvé à partir de ce chemin d'accès.")
+        MessagePrinter({
+            "FR" : "ERREUR : Le fichier CSV n'est pas trouvé à partir de ce chemin d'accès.",
+            "EN" : "ERROR : The Sheet file isn't find with the path given."
+        })
 
     except Exception as e:
-        print("ERREUR : Le fichier CSV est bien trouvé mais rencontre un problème : \n", e)
+        MessagePrinter({
+            "FR" : ("ERREUR : Le fichier CSV est bien trouvé mais rencontre un problème : \n", e),
+            "EN" : ("ERROR : The Sheet file is found but has the following error : \n", e)
+        })

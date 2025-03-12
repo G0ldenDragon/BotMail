@@ -6,7 +6,7 @@ import subprocess
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
 
-from UserInterface import resultatCSV
+from UserInterface import resultatCSV, MessagePrinter
 
 # ---------------------------------------
 
@@ -55,7 +55,10 @@ def documentModificator(dataSerializer):
         motivationLetter.save(MOTIVATION_LETTER_PATH_FINAL)
 
     except Exception as e:
-        print("ERREUR : Une erreur durant la modification du document " + MOTIVATION_LETTER_PATH + " s'est produite : \n", e)
+        MessagePrinter({
+            "FR" : ("ERREUR : Une erreur durant la modification du document " + MOTIVATION_LETTER_PATH + " s'est produite : \n", e),
+            "EN" : ("ERROR : An error occurred during the modification of the following document : " + MOTIVATION_LETTER_PATH + "\n", e)
+        })
         resultatCSV("! Modification Lettre de Motivation !", dataSerializer)
         exit()
 
@@ -74,6 +77,9 @@ def documentConvertor(dataSerializer):
             ])
 
     except Exception as e:
-        print("ERREUR : Une erreur durant la conversion du document " + MOTIVATION_LETTER_PATH_FINAL + " s'est produite : \n", e)
+        MessagePrinter({
+            "FR" : ("ERREUR : Une erreur durant la conversion du document " + MOTIVATION_LETTER_PATH_FINAL + " s'est produite : \n", e),
+            "EN" : ("ERROR : An error occurred during the conversion of the following document : " + MOTIVATION_LETTER_PATH_FINAL + "\n", e)
+        })
         resultatCSV("! Conversion en PDF !", dataSerializer)
         exit()

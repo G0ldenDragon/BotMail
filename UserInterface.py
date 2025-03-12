@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import ntpath
+from Constants import COLUMNS
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
 
@@ -32,16 +33,24 @@ def confirmationUtilisateur(messageInput, confirmation):
 
 # ---------------------
 # Ajout dans le fichier CSV Résultat
-def resultatCSV(resultat, dataSerializer):
+def resultatCSV(resultMessage, dataSerializer):
     try:
-        newLine = pd.DataFrame([[resultat, dataSerializer.emailEntreprise, dataSerializer.nomEntreprise, dataSerializer.adresseEntreprise, dataSerializer.telephoneEntreprise]], columns=['XXP', 'XXE', 'XXN', 'XXA', 'XXT'])
+        newLine = pd.DataFrame([[resultMessage, dataSerializer.emailEntreprise, dataSerializer.nomEntreprise, dataSerializer.adresseEntreprise, dataSerializer.telephoneEntreprise]], columns = COLUMNS)
         newLine.to_csv(CSV_RESULT_FILE_PATH, mode='a', header=False, index=False, sep=';')
 
     except Exception as e:
-        print("ERREUR : Une erreur durant l'enregistrement des résultats s'est produite : \n", e)
+        MessagePrinter({
+            "FR" : ("ERREUR : Une erreur durant l'enregistrement des résultats s'est produite : \n", e),
+            "EN" : ("ERROR : An error occurred during the saving of the results.\n", e)
+        })
         exit()
 
 # ---------------------
 # Raise une exception de la langue utilisée.
 def ExceptionRaiser(errorMessage: dict):
     raise Exception(errorMessage[os.getenv("LANGUAGE")])
+
+# ----------------------
+# Affiche un message de la langue utilisée.
+def MessagePrinter(message: dict):
+    print(message[os.getenv("LANGUAGE")])

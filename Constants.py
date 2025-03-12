@@ -17,3 +17,6 @@ CONFIGURATION_STMP = {
 
 # Liste des extensions de fichier valables.
 CORRECT_EXTENSIONS = [".csv", ".xlsx", ".xls", ".ods"]
+
+# Colonnes des valeurs.
+COLUMNS = ['XXP', 'XXE', 'XXN', 'XXA', 'XXT']
