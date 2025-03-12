@@ -34,7 +34,7 @@ if __name__ == '__main__':
             resultFile.to_csv(FILE_SHEET_RESULT_PATH, index=False, sep=';')
 
         else:
-            userInput = confirmationUtilisateur({
+            userConfirm = {
                 "FR" : {
                     "messageInput" : "Le fichier --" + nomFichierDuChemin(FILE_SHEET_RESULT_PATH) + "-- va être écrasé, voulez-vous continuer ?\n",
                     "confirmation" : ["Oui", "Non"]
@@ -43,16 +43,18 @@ if __name__ == '__main__':
                     "messageInput" : "The following file --" + nomFichierDuChemin(FILE_SHEET_RESULT_PATH) + "-- will be overwritten, Do you want to continue ?\n",
                     "confirmation" : ["Yes", "No"]
                 }
-            })
+            }
 
-            if userInput == "Non":
+            userInput = confirmationUtilisateur(userConfirm)
+
+            if userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][1]:
                 MessagePrinter({
                     "FR" : "Arrêt...",
                     "EN" : "Shutting down..."
                 })
                 exit()
 
-            if userInput == "Oui":
+            if userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][0]:
                 resultFile = pd.DataFrame(columns = COLUMNS)
                 resultFile.to_csv(FILE_SHEET_RESULT_PATH, index=False, sep=';')
     except PermissionError as e:
@@ -62,12 +64,22 @@ if __name__ == '__main__':
         })
 
     userInput = ""
+    userConfirm = {
+        "FR" : {
+            "messageInput" : "",
+            "confirmation" : ["Oui", "Oui pour Tout", "Non", "Stop"]
+        },
+        "EN" : {
+            "messageInput" : "",
+            "confirmation" : ["Yes", "Yes for All", "No", "Stop"]
+        }
+    }
     try:
         # Lecture des données sérialisée pour traitement
         for i in range(0, dataSerializer.getLength()):
 
             # Définition du choix utilisateur
-            if userInput != "Oui pour Tout":
+            if userInput != userConfirm[os.getenv("LANGUAGE")]["confirmation"][1]:
                 userInput = ""
 
             # Définition de toutes les valeurs à partir de la ligne actuelle du fichier CSV.
@@ -114,11 +126,11 @@ if __name__ == '__main__':
                 # Envoie des mails
 
                 # Si le choix précédent est "Oui pour Tout", on ne pose pas la question
-                if userInput != "Oui pour Tout":
+                if userInput != userConfirm[os.getenv("LANGUAGE")]["confirmation"][1]:
 
                     # Si un email a déjà été envoyé à ce destinataire
                     if dataSerializer.previousSend == "Envoyé !":
-                        userInput = confirmationUtilisateur({
+                        userConfirm = {
                             "FR" : {
                                 "messageInput" : "Un mail à déjà été envoyé à --" + dataSerializer.recipientName + "--, voulez-vous en renvoyer un ? (N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n",
                                 "confirmation" : ["Oui", "Oui pour Tout", "Non", "Stop"]
@@ -127,10 +139,11 @@ if __name__ == '__main__':
                                 "messageInput" : "A mail has already been sent to --" + nomFichierDuChemin(FILE_SHEET_RESULT_PATH) + "-- would you like to send another one ? (Don't forget to verify the PDF of the motivation letter generated.)\n",
                                 "confirmation" : ["Yes", "Yes for All", "No", "Stop"]
                             }
-                        })
+                        }
+                        userInput = confirmationUtilisateur(userConfirm)
 
                     else:
-                        userInput = confirmationUtilisateur({
+                        userConfirm = {
                             "FR" : {
                                 "messageInput" : "\nVoulez-vous envoyer ce mail à --" + dataSerializer.recipientName + "-- ? (N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n",
                                 "confirmation" : ["Oui", "Oui pour Tout", "Non", "Stop"]
@@ -139,10 +152,11 @@ if __name__ == '__main__':
                                 "messageInput" : "\nWould you like to send this mail to --" + dataSerializer.recipientName + "-- ? (Don't forget to verify the PDF of the motivation letter generated.)\n",
                                 "confirmation" : ["Yes", "Yes for All", "No", "Stop"]
                             }
-                        })
+                        }
+                        userInput = confirmationUtilisateur(userConfirm)
 
                 # Si Stop : Arrêt du programme
-                if userInput == "Stop":
+                if userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][3]:
                     MessagePrinter({
                         "FR" : "Arrêt...",
                         "EN" : "Shutting down..."
@@ -150,14 +164,14 @@ if __name__ == '__main__':
                     exit()
 
                 # Si Non : Destinataire suivant
-                if userInput == "Non":
+                if userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][2]:
                     MessagePrinter({
                         "FR" : "Prochain destinataire...\n",
                         "EN" : "Next recipient...\n"
                     })
 
                 # Si Oui : Envoie d'un mail
-                if userInput == "Oui" or userInput == "Oui pour Tout":
+                if userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][0] or userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][1]:
                     EmailSender.send(dataSerializer)
 
             else:
