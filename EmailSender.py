@@ -50,9 +50,9 @@ def send (dataSerializer):
             corps = file_reader.read()
 
     except Exception as e:
-        MessagePrinter({
-            "FR" : "ERREUR : Une erreur durant la lecture du fichier --" + EMAIL_CONTENT_PATH + "-- contenant le corps du mail s'est produite : \n" + str(e),
-            "EN" : "ERROR : An error occurred during the reading of the following file which contains the body of the mail : --" + EMAIL_CONTENT_PATH + "-- \n" + str(e)
+        ExceptionRaiser({
+            "FR" : "Une erreur durant la lecture du fichier --" + EMAIL_CONTENT_PATH + "-- contenant le corps du mail s'est produite : \n" + str(e),
+            "EN" : "An error occurred during the reading of the following file which contains the body of the mail : --" + EMAIL_CONTENT_PATH + "-- \n" + str(e)
         })
         resultatCSV("! Corps du Texte !", dataSerializer)
         exit()
@@ -72,9 +72,9 @@ def send (dataSerializer):
                 mail.add_attachment(file_data, maintype='application', subtype='pdf', filename=PDFName)
 
     except Exception as e:
-        MessagePrinter({
-            "FR" : "ERREUR : Une erreur durant la lecture du fichier contenant le corps du mail --" + EMAIL_CONTENT_PATH + "-- s'est produite : \n" + str(e),
-            "EN" : "ERROR : An error occurred during the reading of the following PDF file : --" + EMAIL_CONTENT_PATH + "-- \n" + str(e)
+        ExceptionRaiser({
+            "FR" : "Une erreur durant la lecture du fichier contenant le corps du mail --" + EMAIL_CONTENT_PATH + "-- s'est produite : \n" + str(e),
+            "EN" : "An error occurred during the reading of the following PDF file : --" + EMAIL_CONTENT_PATH + "-- \n" + str(e)
         })
         resultatCSV("! Lecture des PDFs !", dataSerializer)
         exit()
@@ -116,18 +116,18 @@ def send (dataSerializer):
             server.login(EMAIL_SENDER, MDP_APPLICATION)
             server.sendmail(EMAIL_SENDER, receveurs, mail.as_string())
 
-            MessagePrinter({
-                "FR" : "Mail envoyé !\n\n",
-                "EN" : "Mail sent !\n\n"
-            })
+        MessagePrinter({
+            "FR" : "Mail envoyé !\n\n",
+            "EN" : "Mail sent !\n\n"
+        })
 
-            # Enregistrement des résultat dans un CSV annexe.
-            resultatCSV("Envoyé !", dataSerializer)
+        # Enregistrement des résultat dans un CSV annexe.
+        resultatCSV("Envoyé !", dataSerializer)
 
     except Exception as e:
-        MessagePrinter({
-            "FR" : "ERREUR : Une erreur durant l'envoie du mail s'est produite : \n" + str(e),
-            "EN" : "ERROR : An error occurred during the sending of the mail : \n" + str(e)
+        ExceptionRaiser({
+            "FR" : "Une erreur durant l'envoie du mail s'est produite : \n" + str(e),
+            "EN" : "An error occurred during the sending of the mail : \n" + str(e)
         })
         resultatCSV("! Problème Envoie du Mail !", dataSerializer)
         exit()

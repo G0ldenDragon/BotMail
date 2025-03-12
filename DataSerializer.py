@@ -1,11 +1,9 @@
 import os
 import pandas as pd
 from dotenv import load_dotenv
-
-from Constants import CORRECT_EXTENSIONS
-
 load_dotenv(dotenv_path=".env")
 
+from Constants import CORRECT_EXTENSIONS
 from UserInterface import nomFichierDuChemin, ExceptionRaiser
 
 

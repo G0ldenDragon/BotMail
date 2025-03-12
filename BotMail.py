@@ -47,20 +47,20 @@ if __name__ == '__main__':
 
             userInput = confirmationUtilisateur(userConfirm)
 
-            if userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][1]:
+            if userInput == 1:
                 MessagePrinter({
                     "FR" : "Arrêt...",
                     "EN" : "Shutting down..."
                 })
                 exit()
 
-            if userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][0]:
+            if userInput == 0:
                 resultFile = pd.DataFrame(columns = COLUMNS)
                 resultFile.to_csv(FILE_SHEET_RESULT_PATH, index=False, sep=';')
     except PermissionError as e:
         ExceptionRaiser({
-            "FR" : "Le fichier donné en argument est ouvert dans un autre programme, impossible de l'ouvrir.",
-            "EN" : "The file provided as an argument is open in another program, it cannot be accessed."
+            "FR" : "La feuille de calcul de résultat donné est ouvert dans un autre programme, impossible de l'ouvrir.",
+            "EN" : "The result sheet file provided is open in another program, it cannot be accessed."
         })
 
     userInput = ""
@@ -79,7 +79,7 @@ if __name__ == '__main__':
         for i in range(0, dataSerializer.getLength()):
 
             # Définition du choix utilisateur
-            if userInput != userConfirm[os.getenv("LANGUAGE")]["confirmation"][1]:
+            if userInput != 1:
                 userInput = ""
 
             # Définition de toutes les valeurs à partir de la ligne actuelle du fichier CSV.
@@ -126,7 +126,7 @@ if __name__ == '__main__':
                 # Envoie des mails
 
                 # Si le choix précédent est "Oui pour Tout", on ne pose pas la question
-                if userInput != userConfirm[os.getenv("LANGUAGE")]["confirmation"][1]:
+                if userInput != 1:
 
                     # Si un email a déjà été envoyé à ce destinataire
                     if dataSerializer.previousSend == "Envoyé !":
@@ -156,7 +156,7 @@ if __name__ == '__main__':
                         userInput = confirmationUtilisateur(userConfirm)
 
                 # Si Stop : Arrêt du programme
-                if userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][3]:
+                if userInput == 3:
                     MessagePrinter({
                         "FR" : "Arrêt...",
                         "EN" : "Shutting down..."
@@ -164,22 +164,22 @@ if __name__ == '__main__':
                     exit()
 
                 # Si Non : Destinataire suivant
-                if userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][2]:
+                if userInput == 2:
                     MessagePrinter({
                         "FR" : "Prochain destinataire...\n",
                         "EN" : "Next recipient...\n"
                     })
 
                 # Si Oui : Envoie d'un mail
-                if userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][0] or userInput == userConfirm[os.getenv("LANGUAGE")]["confirmation"][1]:
+                if userInput == 0 or userInput == 1:
                     EmailSender.send(dataSerializer)
 
             else:
-                MessagePrinter({
-                    "FR" : "ERREUR : L'email --" + dataSerializer.recipientEmail + "-- de --" + dataSerializer.recipientName + "-- n'est pas valide.\n",
-                    "EN" : "ERROR : The following email --" + dataSerializer.recipientEmail + "-- of --" + dataSerializer.recipientName + "-- isn't valid.\n"
-                })
                 resultatCSV("! Email Invalide !", dataSerializer)
+                ExceptionRaiser({
+                    "FR" : "L'email --" + dataSerializer.recipientEmail + "-- de --" + dataSerializer.recipientName + "-- n'est pas valide.\n",
+                    "EN" : "The following email --" + dataSerializer.recipientEmail + "-- of --" + dataSerializer.recipientName + "-- isn't valid.\n"
+                })
 
         MessagePrinter({
             "FR" : "Plus aucun destinataire, arrêt...",
@@ -187,13 +187,13 @@ if __name__ == '__main__':
         })
 
     except FileNotFoundError as e:
-        MessagePrinter({
-            "FR" : "ERREUR : Le fichier CSV n'est pas trouvé à partir de ce chemin d'accès.",
-            "EN" : "ERROR : The Sheet file isn't find with the path given."
+        ExceptionRaiser({
+            "FR" : "La feuille de calcul de type " + dataSerializer.fileExtension + " n'est pas trouvé à partir de ce chemin d'accès.",
+            "EN" : "The sheet file of type " + dataSerializer.fileExtension + " isn't find with the path given."
         })
 
     except Exception as e:
-        MessagePrinter({
-            "FR" : "ERREUR : Le fichier CSV est bien trouvé mais rencontre un problème : \n" + str(e),
-            "EN" : "ERROR : The Sheet file is found but has the following error : \n" + str(e)
+        ExceptionRaiser({
+            "FR" : "La feuille de calcul de type " + dataSerializer.fileExtension + " est bien trouvé mais rencontre un problème : \n" + str(e),
+            "EN" : "The sheet file of type " + dataSerializer.fileExtension + " is found but has the following error : \n" + str(e)
         })
