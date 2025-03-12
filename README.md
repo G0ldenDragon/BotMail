@@ -1,7 +1,7 @@
 # Utilisation de BotMail
 
 ### Fonctionnement
-BotMail va, à partir d'un fichier CSV renseignant le nom et l'email de l'entreprise, modifier la Lettre de Motivation (en ".docx") et envoyer automatiquement des mails.
+BotMail va, à partir d'un fichier CSV renseignant le nom et l'email du destinataire, modifier la Lettre de Motivation (en ".docx") et envoyer automatiquement des mails.
 Puis il va imprimer sous format PDF la Lettre de Motivation et le joindre en tant que document au mail.
 Il est possible d'ajouter d'autres documents, tous uniquement sous format PDF.
 Chaque problème rencontré va, par sécurité, faire s'arrêter le programme.
@@ -25,15 +25,15 @@ pip install -r ./requirements.txt
 - Fichier CSV
     - Le nom du fichier CSV doit comprendre ".csv".
     - Un format de CSV particulier :
-        envoiePrecedent | nomEntreprise | emailEntreprise | adresseEntreprise | telephoneEntreprise
-        VIDE | Nom de l'entreprise | Email de l'entreprise | Adresse de l'entreprise | Numéro de Téléphone de l'entreprise
+        previousSend | recipientName | recipientEmail | recipientAddress | recipientPhone
+        VIDE | Nom du destinataire | Email du destinataire | Adresse du destinataire | Numéro de Téléphone du destinataire
 
 - Lettre de Motivation
     - Le remplacement des différentes valeurs se fait sous ce format :
-        - XXN : Sera remplacer par le Nom de l'Entreprise.
-        - XXE : Sera remplacer par l'Email de l'Entreprise.
-        - XXA : Sera remplacer par l'Adresse de l'Entreprise.
-        - XXT : Sera remplacer par le numéro de Téléphone de l'Entreprise.
+        - XXN : Sera remplacer par le Nom du destinataire.
+        - XXE : Sera remplacer par l'Email du destinataire.
+        - XXA : Sera remplacer par l'Adresse du destinataire.
+        - XXT : Sera remplacer par le numéro de Téléphone du destinataire.
 
     - La lettre de motivation doit avoir pour extension ".docx".
         Le nom de la lettre de motivation doit aussi avoir ".docx".
@@ -58,7 +58,7 @@ pip install -r ./requirements.txt
 
 ### Constantes à définir
 ##### CSV
-- CSV_FILE_PATH : Le chemin d'accès vers un fichier ".csv" respectant la configuration nécessaire.
+- FILE_SHEET_PATH : Le chemin d'accès vers un fichier ".csv" respectant la configuration nécessaire.
     ``` Python
     r"path/to/Adresses.csv"
     ```

@@ -12,7 +12,7 @@ from UserInterface import nomFichierDuChemin, ExceptionRaiser
 # -------------------------
 
 class DataSerializer:
-    def __init__(self, csvFilePath = os.getenv("CSV_FILE_PATH")):
+    def __init__(self, csvFilePath = os.getenv("FILE_SHEET_PATH")):
         # Vérification du fichier, s'il est vide, il ne sert à rien de continuer.
         if os.stat(csvFilePath).st_size == 0:
             ExceptionRaiser({
@@ -46,11 +46,11 @@ class DataSerializer:
                 "EN" : "The file given in argument is not an Excel file. Please check the status of the file."
             })
 
-        self.envoiePrecedent = ""
-        self.emailEntreprise = ""
-        self.nomEntreprise = ""
-        self.adresseEntreprise = ""
-        self.telephoneEntreprise = ""
+        self.previousSend = ""
+        self.recipientEmail = ""
+        self.recipientName = ""
+        self.recipientAddress = ""
+        self.recipientPhone = ""
 
     # -------------------------
     def getLength(self):
@@ -68,15 +68,15 @@ class DataSerializer:
     # -------------------------
     def setCurrentLine(self, number):
         if pd.notnull (self.data.loc[number, 'XXP']):
-            self.envoiePrecedent = self.data.loc[number, 'XXP']
+            self.previousSend = self.data.loc[number, 'XXP']
 
-        self.emailEntreprise = self.data.loc[number, 'XXE'].lower().rstrip()
+        self.recipientEmail = self.data.loc[number, 'XXE'].lower().rstrip()
 
         if pd.notnull (self.data.loc[number, 'XXN']):
-            self.nomEntreprise = self.data.loc[number, 'XXN'].rstrip()
+            self.recipientName = self.data.loc[number, 'XXN'].rstrip()
 
         if pd.notnull (self.data.loc[number, 'XXA']):
-            self.adresseEntreprise = self.data.loc[number, 'XXA'].rstrip()
+            self.recipientAddress = self.data.loc[number, 'XXA'].rstrip()
 
         if pd.notnull (self.data.loc[number, 'XXT']):
-            self.telephoneEntreprise = self.data.loc[number, 'XXT']
+            self.recipientPhone = self.data.loc[number, 'XXT']

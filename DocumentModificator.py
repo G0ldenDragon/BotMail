@@ -10,9 +10,9 @@ from UserInterface import resultatCSV, MessagePrinter
 
 # ---------------------------------------
 
-# !!!!!!! Le nom de l'entreprise doit être remplacée par "XXN" !!!!!!!!!!!!!
-# !!!!!!! L'adresse de l'entreprise doit être remplacée par "XXA" !!!!!!!!!!!!!
-# !!!!!!! Le numéro de téléphone de l'entreprise doit être remplacée par "XXT" !!!!!!!!!!!!!
+# !!!!!!! Le nom du destinataire doit être remplacée par "XXN" !!!!!!!!!!!!!
+# !!!!!!! L'adresse du destinataire doit être remplacée par "XXA" !!!!!!!!!!!!!
+# !!!!!!! Le numéro de téléphone du destinataire doit être remplacée par "XXT" !!!!!!!!!!!!!
 MOTIVATION_LETTER_PATH = os.getenv("MOTIVATION_LETTER_PATH")
 MOTIVATION_LETTER_PATH_FINAL = os.getenv("MOTIVATION_LETTER_PATH_FINAL")
 MOTIVATION_LETTER_PATH_PDF = os.getenv("MOTIVATION_LETTER_PATH_PDF")
@@ -26,21 +26,21 @@ def documentModificator(dataSerializer):
         motivationLetter = Document(MOTIVATION_LETTER_PATH)
 
         for paragraph in motivationLetter.paragraphs:
-            # Remplacement de l'Email de l'entreprise
-            if "XXE" in paragraph.text and dataSerializer.emailEntreprise != "":
-                paragraph.text = paragraph.text.replace("XXE", dataSerializer.emailEntreprise)
+            # Remplacement de l'Email du destinataire
+            if "XXE" in paragraph.text and dataSerializer.recipientEmail != "":
+                paragraph.text = paragraph.text.replace("XXE", dataSerializer.recipientEmail)
 
-            # Remplacement du Nom de l'entreprise
-            if "XXN" in paragraph.text and dataSerializer.nomEntreprise != "":
-                paragraph.text = paragraph.text.replace("XXN", dataSerializer.nomEntreprise)
+            # Remplacement du Nom du destinataire
+            if "XXN" in paragraph.text and dataSerializer.recipientName != "":
+                paragraph.text = paragraph.text.replace("XXN", dataSerializer.recipientName)
 
-            # Remplacement de l'Adresse de l'entreprise
-            if "XXA" in paragraph.text and dataSerializer.adresseEntreprise != "":
-                paragraph.text = paragraph.text.replace("XXA", dataSerializer.adresseEntreprise)
+            # Remplacement de l'Adresse du destinataire
+            if "XXA" in paragraph.text and dataSerializer.recipientAddress != "":
+                paragraph.text = paragraph.text.replace("XXA", dataSerializer.recipientAddress)
 
-            # Remplacement du numéro de Téléphone de l'entreprise
-            if "XXT" in paragraph.text and dataSerializer.telephoneEntreprise != "":
-                paragraph.text = paragraph.text.replace("XXT", dataSerializer.telephoneEntreprise)
+            # Remplacement du numéro de Téléphone du destinataire
+            if "XXT" in paragraph.text and dataSerializer.recipientPhone != "":
+                paragraph.text = paragraph.text.replace("XXT", dataSerializer.recipientPhone)
 
             # Remplacement de la Date
             if "XXD" in paragraph.text:
@@ -56,8 +56,8 @@ def documentModificator(dataSerializer):
 
     except Exception as e:
         MessagePrinter({
-            "FR" : ("ERREUR : Une erreur durant la modification du document " + MOTIVATION_LETTER_PATH + " s'est produite : \n", e),
-            "EN" : ("ERROR : An error occurred during the modification of the following document : " + MOTIVATION_LETTER_PATH + "\n", e)
+            "FR" : "ERREUR : Une erreur durant la modification du document " + MOTIVATION_LETTER_PATH + " s'est produite : \n" + str(e),
+            "EN" : "ERROR : An error occurred during the modification of the following document : " + MOTIVATION_LETTER_PATH + "\n" + str(e)
         })
         resultatCSV("! Modification Lettre de Motivation !", dataSerializer)
         exit()
@@ -78,8 +78,8 @@ def documentConvertor(dataSerializer):
 
     except Exception as e:
         MessagePrinter({
-            "FR" : ("ERREUR : Une erreur durant la conversion du document " + MOTIVATION_LETTER_PATH_FINAL + " s'est produite : \n", e),
-            "EN" : ("ERROR : An error occurred during the conversion of the following document : " + MOTIVATION_LETTER_PATH_FINAL + "\n", e)
+            "FR" : "ERREUR : Une erreur durant la conversion du document " + MOTIVATION_LETTER_PATH_FINAL + " s'est produite : \n" + str(e),
+            "EN" : "ERROR : An error occurred during the conversion of the following document : " + MOTIVATION_LETTER_PATH_FINAL + "\n" + str(e)
         })
         resultatCSV("! Conversion en PDF !", dataSerializer)
         exit()

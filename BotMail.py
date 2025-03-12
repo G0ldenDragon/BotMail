@@ -15,8 +15,8 @@ import EmailSender
 # ---------------------------------------
 
 # Chemin d'accès vers le fichier CSV
-CSV_FILE_PATH = os.getenv("CSV_FILE_PATH")
-CSV_RESULT_FILE_PATH = os.getenv("CSV_RESULT_FILE_PATH")
+FILE_SHEET_PATH = os.getenv("FILE_SHEET_PATH")
+FILE_SHEET_RESULT_PATH = os.getenv("FILE_SHEET_RESULT_PATH")
 
 # ---------------------------------------
 
@@ -28,27 +28,33 @@ if __name__ == '__main__':
 
     try:
         # Créer ou demande l'écrasement du fichier CSV résultant
-        if not(os.path.exists (CSV_FILE_PATH)):
+        if not(os.path.exists (FILE_SHEET_PATH)):
             # Créer le fichier de résultat avec les entêtes
             resultFile = pd.DataFrame(columns = COLUMNS)
-            resultFile.to_csv(CSV_RESULT_FILE_PATH, index=False, sep=';')
+            resultFile.to_csv(FILE_SHEET_RESULT_PATH, index=False, sep=';')
 
         else:
-            userInput = confirmationUtilisateur(
-                "Le fichier --" + nomFichierDuChemin(CSV_RESULT_FILE_PATH) + "-- va être écrasé, voulez-vous continuer ?\n",
-                ["Oui", "Non"]
-            )
+            userInput = confirmationUtilisateur({
+                "FR" : {
+                    "messageInput" : "Le fichier --" + nomFichierDuChemin(FILE_SHEET_RESULT_PATH) + "-- va être écrasé, voulez-vous continuer ?\n",
+                    "confirmation" : ["Oui", "Non"]
+                },
+                "EN" : {
+                    "messageInput" : "The following file --" + nomFichierDuChemin(FILE_SHEET_RESULT_PATH) + "-- will be overwritten, Do you want to continue ?\n",
+                    "confirmation" : ["Yes", "No"]
+                }
+            })
 
             if userInput == "Non":
                 MessagePrinter({
                     "FR" : "Arrêt...",
-                    "EN" : "Shuting down..."
+                    "EN" : "Shutting down..."
                 })
                 exit()
 
             if userInput == "Oui":
                 resultFile = pd.DataFrame(columns = COLUMNS)
-                resultFile.to_csv(CSV_RESULT_FILE_PATH, index=False, sep=';')
+                resultFile.to_csv(FILE_SHEET_RESULT_PATH, index=False, sep=';')
     except PermissionError as e:
         ExceptionRaiser({
             "FR" : "Le fichier donné en argument est ouvert dans un autre programme, impossible de l'ouvrir.",
@@ -68,18 +74,18 @@ if __name__ == '__main__':
             dataSerializer.setCurrentLine(i)
 
             # Vérification de l'existence et de la validité de l'email
-            if validate_email(dataSerializer.emailEntreprise):
+            if validate_email(dataSerializer.recipientEmail):
 
-                # Impression de l'entreprise à qui va être envoyé le mail.
+                # Impression du destinataire à qui va être envoyé le mail.
                 MessagePrinter({
-                    "FR" : "Destinataire : ---" + dataSerializer.nomEntreprise + "---",
-                    "EN" : "Recipient : ---" + dataSerializer.nomEntreprise + "---"
+                    "FR" : "Destinataire : ---" + dataSerializer.recipientName + "---",
+                    "EN" : "Recipient : ---" + dataSerializer.recipientName + "---"
                 })
 
                 # -------------------------------------------
                 # Modification Docx
 
-                # Modification du Docx en fonction des noms des entreprises
+                # Modification du Docx en fonction des noms des destinataires
                 MessagePrinter({
                     "FR" : "Modification...",
                     "EN" : "Modification..."
@@ -111,27 +117,39 @@ if __name__ == '__main__':
                 if userInput != "Oui pour Tout":
 
                     # Si un email a déjà été envoyé à ce destinataire
-                    if dataSerializer.envoiePrecedent == "Envoyé !":
-                        userInput = confirmationUtilisateur(
-                            "Un mail à déjà été envoyé à --" + dataSerializer.nomEntreprise + "--, voulez-vous en renvoyer un ? (N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n",
-                            ["Oui", "Oui pour Tout", "Non", "Stop"]
-                        )
+                    if dataSerializer.previousSend == "Envoyé !":
+                        userInput = confirmationUtilisateur({
+                            "FR" : {
+                                "messageInput" : "Un mail à déjà été envoyé à --" + dataSerializer.recipientName + "--, voulez-vous en renvoyer un ? (N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n",
+                                "confirmation" : ["Oui", "Oui pour Tout", "Non", "Stop"]
+                            },
+                            "EN" : {
+                                "messageInput" : "A mail has already been sent to --" + nomFichierDuChemin(FILE_SHEET_RESULT_PATH) + "-- would you like to send another one ? (Don't forget to verify the PDF of the motivation letter generated.)\n",
+                                "confirmation" : ["Yes", "Yes for All", "No", "Stop"]
+                            }
+                        })
 
                     else:
-                        userInput = confirmationUtilisateur(
-                            "\nVoulez-vous envoyer ce mail à --" + dataSerializer.nomEntreprise + "-- ? (N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n",
-                            ["Oui", "Oui pour Tout", "Non", "Stop"]
-                        )
+                        userInput = confirmationUtilisateur({
+                            "FR" : {
+                                "messageInput" : "\nVoulez-vous envoyer ce mail à --" + dataSerializer.recipientName + "-- ? (N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n",
+                                "confirmation" : ["Oui", "Oui pour Tout", "Non", "Stop"]
+                            },
+                            "EN" : {
+                                "messageInput" : "\nWould you like to send this mail to --" + dataSerializer.recipientName + "-- ? (Don't forget to verify the PDF of the motivation letter generated.)\n",
+                                "confirmation" : ["Yes", "Yes for All", "No", "Stop"]
+                            }
+                        })
 
                 # Si Stop : Arrêt du programme
                 if userInput == "Stop":
                     MessagePrinter({
                         "FR" : "Arrêt...",
-                        "EN" : "Shuting down..."
+                        "EN" : "Shutting down..."
                     })
                     exit()
 
-                # Si Non : Entreprise suivante
+                # Si Non : Destinataire suivant
                 if userInput == "Non":
                     MessagePrinter({
                         "FR" : "Prochain destinataire...\n",
@@ -144,8 +162,8 @@ if __name__ == '__main__':
 
             else:
                 MessagePrinter({
-                    "FR" : "ERREUR : L'email --" + dataSerializer.emailEntreprise + "-- de --" + dataSerializer.nomEntreprise + "-- n'est pas valide.\n",
-                    "EN" : "ERROR : The following email --" + dataSerializer.emailEntreprise + "-- of --" + dataSerializer.nomEntreprise + "-- isn't valid.\n"
+                    "FR" : "ERREUR : L'email --" + dataSerializer.recipientEmail + "-- de --" + dataSerializer.recipientName + "-- n'est pas valide.\n",
+                    "EN" : "ERROR : The following email --" + dataSerializer.recipientEmail + "-- of --" + dataSerializer.recipientName + "-- isn't valid.\n"
                 })
                 resultatCSV("! Email Invalide !", dataSerializer)
 
@@ -162,6 +180,6 @@ if __name__ == '__main__':
 
     except Exception as e:
         MessagePrinter({
-            "FR" : ("ERREUR : Le fichier CSV est bien trouvé mais rencontre un problème : \n", e),
-            "EN" : ("ERROR : The Sheet file is found but has the following error : \n", e)
+            "FR" : "ERREUR : Le fichier CSV est bien trouvé mais rencontre un problème : \n" + str(e),
+            "EN" : "ERROR : The Sheet file is found but has the following error : \n" + str(e)
         })

@@ -25,7 +25,7 @@ MDP_APPLICATION = os.getenv("MDP_APPLICATION")
 
 def send (dataSerializer):
     # Liste des adresses à qui envoyer le mail
-    receveurs = [dataSerializer.emailEntreprise]
+    receveurs = [dataSerializer.recipientEmail]
 
     # Construction du mail
     MessagePrinter({
@@ -51,8 +51,8 @@ def send (dataSerializer):
 
     except Exception as e:
         MessagePrinter({
-            "FR" : ("ERREUR : Une erreur durant la lecture du fichier --" + EMAIL_CONTENT_PATH + "-- contenant le corps du mail s'est produite : \n", e),
-            "EN" : ("ERROR : An error occurred during the reading of the following file which contains the body of the mail : --" + EMAIL_CONTENT_PATH + "-- \n", e)
+            "FR" : "ERREUR : Une erreur durant la lecture du fichier --" + EMAIL_CONTENT_PATH + "-- contenant le corps du mail s'est produite : \n" + str(e),
+            "EN" : "ERROR : An error occurred during the reading of the following file which contains the body of the mail : --" + EMAIL_CONTENT_PATH + "-- \n" + str(e)
         })
         resultatCSV("! Corps du Texte !", dataSerializer)
         exit()
@@ -73,8 +73,8 @@ def send (dataSerializer):
 
     except Exception as e:
         MessagePrinter({
-            "FR" : ("ERREUR : Une erreur durant la lecture du fichier contenant le corps du mail --" + EMAIL_CONTENT_PATH + "-- s'est produite : \n", e),
-            "EN" : ("ERROR : An error occurred during the reading of the following PDF file : --" + EMAIL_CONTENT_PATH + "-- \n", e)
+            "FR" : "ERREUR : Une erreur durant la lecture du fichier contenant le corps du mail --" + EMAIL_CONTENT_PATH + "-- s'est produite : \n" + str(e),
+            "EN" : "ERROR : An error occurred during the reading of the following PDF file : --" + EMAIL_CONTENT_PATH + "-- \n" + str(e)
         })
         resultatCSV("! Lecture des PDFs !", dataSerializer)
         exit()
@@ -109,8 +109,8 @@ def send (dataSerializer):
 
         # Envoie du mail
         MessagePrinter({
-            "FR" : "Envoie à " + dataSerializer.nomEntreprise + "...",
-            "EN" : "Sending to " + dataSerializer.nomEntreprise + "..."
+            "FR" : "Envoie à " + dataSerializer.recipientName + "...",
+            "EN" : "Sending to " + dataSerializer.recipientName + "..."
         })
         with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
             server.login(EMAIL_SENDER, MDP_APPLICATION)
@@ -126,8 +126,8 @@ def send (dataSerializer):
 
     except Exception as e:
         MessagePrinter({
-            "FR" : ("ERREUR : Une erreur durant l'envoie du mail s'est produite : \n", e),
-            "EN" : ("ERROR : An error occurred during the sending of the mail : \n", e)
+            "FR" : "ERREUR : Une erreur durant l'envoie du mail s'est produite : \n" + str(e),
+            "EN" : "ERROR : An error occurred during the sending of the mail : \n" + str(e)
         })
         resultatCSV("! Problème Envoie du Mail !", dataSerializer)
         exit()
