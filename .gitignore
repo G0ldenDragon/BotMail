@@ -1,4 +1,5 @@
 # Cache de l'utilisation du code
+/__pycache__/
 */__pycache__/
 
 # Librairies
