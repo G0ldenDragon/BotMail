@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-import ntpath
+from pathlib import Path
 from Constants import COLUMNS
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
@@ -11,9 +11,8 @@ FILE_SHEET_RESULT_PATH = os.getenv("FILE_SHEET_RESULT_PATH")
 
 # ---------------------------------------
 
-def nomFichierDuChemin(chemin):
-    chemin, fichier = ntpath.split(chemin)
-    return fichier or ntpath.basename(chemin)
+def fileName(chemin):
+    return Path(chemin).name
 
 # ---------------------------------------
 # Choix de l'utilisateur
