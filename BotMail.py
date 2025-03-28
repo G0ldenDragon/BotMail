@@ -9,7 +9,7 @@ load_dotenv(dotenv_path=".env")
 
 from DataSerializer import DataSerializer
 from DocumentModificator import documentModificator, documentConvertor
-from UserInterface import confirmationUtilisateur, resultatCSV, fileName, ExceptionRaiser, MessagePrinter
+from UserInterface import confirmationUtilisateur, resultatCSV, nomFichierDuChemin, ExceptionRaiser, MessagePrinter
 import EmailSender
 
 # ---------------------------------------
@@ -36,11 +36,11 @@ if __name__ == '__main__':
         else:
             userConfirm = {
                 "FR" : {
-                    "messageInput" : "Le fichier --" + fileName(FILE_SHEET_RESULT_PATH) + "-- va être écrasé, voulez-vous continuer ?\n",
+                    "messageInput" : "Le fichier --" + nomFichierDuChemin(FILE_SHEET_RESULT_PATH) + "-- va être écrasé, voulez-vous continuer ?\n",
                     "confirmation" : ["Oui", "Non"]
                 },
                 "EN" : {
-                    "messageInput" : "The following file --" + fileName(FILE_SHEET_RESULT_PATH) + "-- will be overwritten, Do you want to continue ?\n",
+                    "messageInput" : "The following file --" + nomFichierDuChemin(FILE_SHEET_RESULT_PATH) + "-- will be overwritten, Do you want to continue ?\n",
                     "confirmation" : ["Yes", "No"]
                 }
             }
@@ -136,7 +136,7 @@ if __name__ == '__main__':
                                 "confirmation" : ["Oui", "Oui pour Tout", "Non", "Stop"]
                             },
                             "EN" : {
-                                "messageInput" : "A mail has already been sent to --" + fileName(FILE_SHEET_RESULT_PATH) + "-- would you like to send another one ? (Don't forget to verify the PDF of the motivation letter generated.)\n",
+                                "messageInput" : "A mail has already been sent to --" + nomFichierDuChemin(FILE_SHEET_RESULT_PATH) + "-- would you like to send another one ? (Don't forget to verify the PDF of the motivation letter generated.)\n",
                                 "confirmation" : ["Yes", "Yes for All", "No", "Stop"]
                             }
                         }

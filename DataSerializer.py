@@ -1,12 +1,10 @@
 import os
-from pathlib import Path
-
 import pandas as pd
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
 
 from Constants import CORRECT_EXTENSIONS
-from UserInterface import fileName, ExceptionRaiser
+from UserInterface import nomFichierDuChemin, ExceptionRaiser
 
 
 # -------------------------
@@ -21,8 +19,7 @@ class DataSerializer:
             })
 
         # Obtention de l'extension
-        self.fileExtension = Path(fileName(csvFilePath)).suffix
-        print(self.fileExtension)
+        self.fileExtension = os.path.splitext(nomFichierDuChemin(csvFilePath))[1]
 
         try :
             # Si l'extension du fichier est CSV, alors traitement particulier
