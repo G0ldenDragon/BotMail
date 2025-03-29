@@ -15,6 +15,9 @@ CONFIGURATION_STMP = {
     }
 }
 
+# Langues slélectionnables
+LANGUAGES = ["FR", "EN"]
+
 # Liste des extensions de fichier valables.
 CORRECT_EXTENSIONS = [".csv", ".xlsx", ".xls", ".ods"]
 
