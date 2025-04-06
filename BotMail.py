@@ -74,6 +74,7 @@ if __name__ == '__main__':
             "confirmation" : ["Yes", "Yes for All", "No", "Stop"]
         }
     }
+
     try:
         # Lecture des données sérialisée pour traitement
         for i in range(0, dataSerializer.getLength()):

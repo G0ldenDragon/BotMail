@@ -1,3 +1,4 @@
+import Constants
 from Views.LanguageWindow_View import LanguageWindow_View
 
 class LanguageWindow_Controller:
@@ -12,35 +13,46 @@ class LanguageWindow_Controller:
         self.language = None
 
 
-    # Traitement de la modification
+    # Traitement de la modification de la langue
     def languageModification(self, language):
         self.language = language
 
-        # # Redirige vers PageExample2 après avoir traité la langue
-        # self.container.show_page("PageExample2")
+        self.updateView()
 
 
+    # Traitement de la sélection de la langue
+    def languageSelection(self, language):
+        print("Langue choisie : " + self.language)
+        # Sauvegarde du choix de la langue dans le .env
+        # self.model
+
+
+
+    # Affiche une erreur utilisateur et dans la console/log
     def showError (self, message):
-        self.view.errorLabel.configure(text=message)
+        print("ERROR - " + message)
+        self.view.updateErrorMessage(message)
 
 
+    # Modifie la vue en fonction de la langue
     def updateView(self):
         languageChangements = {
             "FR" : {
-                "button" : "Choisir cette langue.",
-                "error" : "Vous devez choisir une langue."
+                "button" : "Choisir cette langue",
+                "error" : "Veuillez choisir une langue."
             },
             "EN" : {
-                "button" : "Choose this language.",
-                "error" : "You need to choose a language."
+                "button" : "Choose this language",
+                "error" : "Please choose a language."
             }
         }
 
-        if self.language is not None:
-            self.view.button.configure(text=languageChangements[self.language]["button"])
+        if self.language in Constants.LANGUAGES:
+            self.view.updateButtonMessage(languageChangements[self.language]["button"])
         else:
-            self.showError(languageChangements["FR"]["button"])
+            self.showError(languageChangements["FR"]["error"])
 
 
+    # Renvoie la vue de ce controlleur
     def showPage(self):
         self.view.tkraise()

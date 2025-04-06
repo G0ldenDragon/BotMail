@@ -20,28 +20,34 @@ class LanguageWindow_View(ttk.Frame):
             values=LANGUAGES,
             state="readonly"
         )
-        self.dropdownLanguage.set("Please, select your language.")
+        self.dropdownLanguage.set("Please, select your language")
         self.dropdownLanguage.pack(padx=20, pady=10)
         self.dropdownLanguage.bind("<<ComboboxSelected>>", self.dropdownLanguageModification)
 
         # Bouton avec commande liée
         self.button = ttk.Button(
             self,
-            text="Confirmer",
-            command=self.languageFinalChoice
+            text="Choose this language",
+            command=self.buttonLanguageSelection
         )
         self.button.pack(pady=10)
 
 
+    # Fonction appelée lors de la modification dans la combobox
     def dropdownLanguageModification(self, event=None):
-        """Fonction appelée lors de la sélection dans la combobox"""
-        print("Sélection changée : ", self.selectedLanguage.get())
-        # Vous pouvez ajouter ici un traitement immédiat si nécessaire
+        self.controller.languageModification(self.selectedLanguage.get())
 
-    def languageFinalChoice(self):
-        """Gère la confirmation de la sélection"""
-        if self.selectedLanguage.get():
-            print("Confirmation :", self.selectedLanguage.get())
-            self.controller.languageModification(self.selectedLanguage.get())
-        else:
-            print("Veuillez sélectionner une langue")
+
+    # Fonction appelé lors du clique sur le bouton
+    def buttonLanguageSelection(self):
+        self.controller.languageSelection()
+
+
+    # Permet l'affichage d'un message d'erreur
+    def updateErrorMessage(self, message):
+        self.errorLabel.config(text=message)
+
+
+    # Permet la modification du message du button
+    def updateButtonMessage(self, message):
+        self.button.config(text=message)

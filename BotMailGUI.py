@@ -2,6 +2,11 @@ import tkinter as tk
 import sv_ttk
 import platform
 
+# ---------------------
+# Imports
+
+from Constants import LANGUAGES
+
 from Views.PageExample2 import PageExample2
 
 from Models.EnvironmentVariable_Model import EnvironmentVariable_Model
@@ -12,6 +17,7 @@ from Controllers.LanguageWindow_Controller import LanguageWindow_Controller
 from Controllers.ControllerExample2 import ControllerExample2
 from Controllers.ControllerExample3 import ControllerExample3
 
+# ---------------------
 
 class BotMailGUI(tk.Tk):
     def __init__(self):
@@ -21,8 +27,8 @@ class BotMailGUI(tk.Tk):
 
         # Configuration du thème Sun Valley
         sv_ttk.set_theme("dark")
-
         self.os_name = platform.system()
+
 
         # Conteneur principal pour les pages
         container = tk.Frame(self)
