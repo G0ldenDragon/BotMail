@@ -7,7 +7,6 @@ from Views.PageExample2 import PageExample2
 from Models.EnvironmentVariable_Model import EnvironmentVariable_Model
 from Models.ModelExample1 import ModelExample1
 from Models.ModelExample2 import ModelExample2
-from Models.ModelExample3 import ModelExample3
 
 from Controllers.LanguageWindow_Controller import LanguageWindow_Controller
 from Controllers.ControllerExample2 import ControllerExample2
@@ -35,7 +34,6 @@ class BotMailGUI(tk.Tk):
         # Initialisation des modèles
         environmentVariable_Model = EnvironmentVariable_Model()
         modelExample2 = ModelExample2()
-        modelExample3 = ModelExample3()
 
 
         # Initialisation des contrôleurs avec une référence à l'application principale pour initialisation des vues en interne

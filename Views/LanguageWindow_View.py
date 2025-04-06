@@ -9,16 +9,20 @@ class LanguageWindow_View(ttk.Frame):
         self.controller = controller
         self.selectedLanguage = tk.StringVar()
 
+        # Permet l'affichage d'un message d'erreur
+        self.errorLabel = tk.Label(self, text="", fg="red")
+        self.errorLabel.pack()
+
         # Création du menu déroulant (Combobox)
-        self.dropdown = ttk.Combobox(
+        self.dropdownLanguage = ttk.Combobox(
             self,
             textvariable=self.selectedLanguage,
             values=LANGUAGES,
             state="readonly"
         )
-        self.dropdown.set("Please, select your language.")
-        self.dropdown.pack(padx=20, pady=10)
-        self.dropdown.bind("<<ComboboxSelected>>", self.languageSelection)
+        self.dropdownLanguage.set("Please, select your language.")
+        self.dropdownLanguage.pack(padx=20, pady=10)
+        self.dropdownLanguage.bind("<<ComboboxSelected>>", self.dropdownLanguageModification)
 
         # Bouton avec commande liée
         self.button = ttk.Button(
@@ -29,7 +33,7 @@ class LanguageWindow_View(ttk.Frame):
         self.button.pack(pady=10)
 
 
-    def languageSelection(self, event=None):
+    def dropdownLanguageModification(self, event=None):
         """Fonction appelée lors de la sélection dans la combobox"""
         print("Sélection changée : ", self.selectedLanguage.get())
         # Vous pouvez ajouter ici un traitement immédiat si nécessaire
@@ -38,6 +42,6 @@ class LanguageWindow_View(ttk.Frame):
         """Gère la confirmation de la sélection"""
         if self.selectedLanguage.get():
             print("Confirmation :", self.selectedLanguage.get())
-            self.controller.languageSetter(self.selectedLanguage.get())
+            self.controller.languageModification(self.selectedLanguage.get())
         else:
             print("Veuillez sélectionner une langue")

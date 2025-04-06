@@ -1,4 +1,4 @@
-from Views.LanguageWindow_VIew import LanguageWindow_View
+from Views.LanguageWindow_View import LanguageWindow_View
 
 class LanguageWindow_Controller:
     def __init__(self, container, model):
@@ -9,12 +9,38 @@ class LanguageWindow_Controller:
         # Add the view to its parent using a layout manager
         self.view.grid(row=0, column=0, sticky="nsew")  # Use grid for consistent layout
 
-    def languageSetter(self, language):
-        """Traite ou affiche la langue sélectionnée (provisoire)"""
-        print(f"Langue sélectionnée : {language}")
+        self.language = None
 
-        # Redirige vers PageExample2 après avoir traité la langue
-        self.container.show_page("PageExample2")
+
+    # Traitement de la modification
+    def languageModification(self, language):
+        self.language = language
+
+        # # Redirige vers PageExample2 après avoir traité la langue
+        # self.container.show_page("PageExample2")
+
+
+    def showError (self, message):
+        self.view.errorLabel.configure(text=message)
+
+
+    def updateView(self):
+        languageChangements = {
+            "FR" : {
+                "button" : "Choisir cette langue.",
+                "error" : "Vous devez choisir une langue."
+            },
+            "EN" : {
+                "button" : "Choose this language.",
+                "error" : "You need to choose a language."
+            }
+        }
+
+        if self.language is not None:
+            self.view.button.configure(text=languageChangements[self.language]["button"])
+        else:
+            self.showError(languageChangements["FR"]["button"])
+
 
     def showPage(self):
         self.view.tkraise()
