@@ -5,16 +5,14 @@ import platform
 # ---------------------
 # Imports
 
-from Constants import LANGUAGES
-
-from Views.PageExample2 import PageExample2
+from Views.RequirementsWindow_View import RequirementsWindow_View
 
 from Models.EnvironmentVariable_Model import EnvironmentVariable_Model
 from Models.ModelExample1 import ModelExample1
 from Models.ModelExample2 import ModelExample2
 
 from Controllers.LanguageWindow_Controller import LanguageWindow_Controller
-from Controllers.ControllerExample2 import ControllerExample2
+from Controllers.RequirementsWindow_Controller import RequirementsWindow_Controller
 from Controllers.ControllerExample3 import ControllerExample3
 
 # ---------------------
@@ -45,16 +43,18 @@ class BotMailGUI(tk.Tk):
         # Initialisation des contrôleurs avec une référence à l'application principale pour initialisation des vues en interne
         self.controllers = {
             "languageWindow_Controller" : LanguageWindow_Controller(container, environmentVariable_Model),
-            # controllerExample2 = ControllerExample2(self.models["PageExample2"], None)
-            # controllerExample3 = ControllerExample3(self.models["PageExample3"], None)
+            "requirementsWindow_Controller" : RequirementsWindow_Controller(container, [
+                environmentVariable_Model,
+            ])
+            # "controllerExample3" = ControllerExample3(self.models["PageExample3"], None)
         }
-
 
         # Afficher la première page par défaut
         self.show_page("languageWindow_Controller")
 
+
+    # Affiche une view associée au controlleur appellé
     def show_page(self, controller):
-        """Affiche une page donnée par son nom"""
         self.controllers[controller].showPage()
 
 

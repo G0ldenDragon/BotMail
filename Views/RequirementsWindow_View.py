@@ -3,7 +3,7 @@ from tkinter import ttk
 
 from Constants import LANGUAGES
 
-class LanguageWindow_View(ttk.Frame):
+class RequirementsWindow_View(ttk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
@@ -13,21 +13,10 @@ class LanguageWindow_View(ttk.Frame):
         self.errorLabel = tk.Label(self, text="", fg="red")
         self.errorLabel.pack()
 
-        # Création du menu déroulant (Combobox)
-        self.dropdownLanguage = ttk.Combobox(
-            self,
-            textvariable=self.selectedLanguage,
-            values=LANGUAGES,
-            state="readonly"
-        )
-        self.dropdownLanguage.set("Please, select your language")
-        self.dropdownLanguage.pack(padx=20, pady=10)
-        self.dropdownLanguage.bind("<<ComboboxSelected>>", self.dropdownLanguageModification)
-
         # Bouton avec commande liée
         self.button = ttk.Button(
             self,
-            text="Choose this language",
+            text="TEST",
             command=self.buttonLanguageSelection
         )
         self.button.pack(pady=10)
