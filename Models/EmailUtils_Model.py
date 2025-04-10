@@ -3,8 +3,8 @@ from Constants import CONFIGURATION_STMP
 from validate_email import validate_email
 
 class EmailUtils_Model:
-    def __init__(self):
-        self.emailSender = ""
+    def __init__(self, emailSender : str = ""):
+        self.emailSender = emailSender
 
 
     def set_email_sender(self, emailSender: str):
@@ -18,13 +18,10 @@ class EmailUtils_Model:
         return self.emailSender
 
 
+    # Vérifie si l'email est syntaxiquement valide et la configuration STMP est supportée par l'application
     def is_email_valid(self, email: str) -> bool:
-        for provider, config in CONFIGURATION_STMP.items():
-            if provider in email:
-               if validate_email(email):
-                   return True
+        return any(provider in email for provider in CONFIGURATION_STMP) and validate_email(email)
 
+
+    def send_email(self, emailRecipient: list[str], subject: str, body: str):
         return False
-
-
-    # def send_email(self, email):
