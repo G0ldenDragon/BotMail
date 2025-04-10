@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
 
 from Constants import CORRECT_EXTENSIONS
-from UserInterface import file_name, exception_raiser
+from Utilities import file_name, exception_raiser
 
 
 # -------------------------

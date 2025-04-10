@@ -9,7 +9,7 @@ load_dotenv(dotenv_path=".env")
 
 from DataSerializer import DataSerializer
 from DocumentModificator import document_modificator, document_convertor
-from UserInterface import user_confirmation, CSV_result, file_name, exception_raiser, message_printer
+from Utilities import user_confirmation, CSV_result, file_name, exception_raiser, message_printer
 import EmailSender
 
 # ---------------------------------------

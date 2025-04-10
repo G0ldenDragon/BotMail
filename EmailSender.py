@@ -4,7 +4,7 @@ from email.message import EmailMessage
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
 
-from UserInterface import CSV_result, message_printer, exception_raiser
+from Utilities import CSV_result, message_printer, exception_raiser
 import Constants
 
 # ---------------------------------------

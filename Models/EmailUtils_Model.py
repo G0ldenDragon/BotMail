@@ -2,7 +2,7 @@ from Constants import CONFIGURATION_STMP
 
 from validate_email import validate_email
 
-class EmailGestionnary_Model:
+class EmailUtils_Model:
     def __init__(self):
         self.emailSender = ""
 
