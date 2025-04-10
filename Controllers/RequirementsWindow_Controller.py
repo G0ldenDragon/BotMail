@@ -12,27 +12,27 @@ class RequirementsWindow_Controller:
 
 
     # # Traitement de la modification de la langue
-    # def languageModification(self, language):
+    # def language_modification(self, language):
     #     self.language = language
     #
-    #     self.updateView()
+    #     self.update_view()
     #
     #
     # # Traitement de la sélection de la langue
-    # def languageSelection(self, language):
+    # def language_selection(self, language):
     #     print("Langue choisie : " + self.language)
     #     # Sauvegarde du choix de la langue dans le .env
-    #     self.model.setVariable("LANGUAGE", self.language)
+    #     self.model.set_variable("LANGUAGE", self.language)
 
 
     # Affiche une erreur utilisateur et dans la console/log
-    def showError (self, message):
+    def show_error(self, message):
         print("ERROR - " + message)
-        # self.view.updateErrorMessage(message)
+        # self.view.update_error_message(message)
 
 
     # # Modifie la vue en fonction de la langue
-    # def updateView(self):
+    # def update_view(self):
     #     languageChangements = {
     #         "FR" : {
     #             "button" : "Choisir cette langue",
@@ -45,11 +45,11 @@ class RequirementsWindow_Controller:
     #     }
     #
     #     if self.language in LANGUAGES:
-    #         self.view.updateButtonMessage(languageChangements[self.language]["button"])
+    #         self.view.update_button_message(languageChangements[self.language]["button"])
     #     else:
-    #         self.showError(languageChangements["FR"]["error"])
+    #         self.show_error(languageChangements["FR"]["error"])
 
 
     # Renvoie la vue de ce controlleur
-    def showPage(self):
+    def show_page(self):
         self.view.tkraise()

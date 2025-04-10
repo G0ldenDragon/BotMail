@@ -4,7 +4,7 @@ from email.message import EmailMessage
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
 
-from UserInterface import resultatCSV, MessagePrinter, ExceptionRaiser
+from UserInterface import CSV_result, message_printer, exception_raiser
 import Constants
 
 # ---------------------------------------
@@ -23,12 +23,12 @@ MDP_APPLICATION = os.getenv("MDP_APPLICATION")
 
 # ---------------------------------------
 
-def send (dataSerializer):
+def send(dataSerializer):
     # Liste des adresses à qui envoyer le mail
     receveurs = [dataSerializer.recipientEmail]
 
     # Construction du mail
-    MessagePrinter({
+    message_printer({
         "FR" : "Construction du mail...",
         "EN" : "Creation of the mail..."
     })
@@ -40,7 +40,7 @@ def send (dataSerializer):
     mail['Subject'] = EMAIL_SUBJECT
 
     # Récupération des données du contenu du mail
-    MessagePrinter({
+    message_printer({
         "FR" : "Ajout du corps du mail...",
         "EN" : "Adding the email body..."
     })
@@ -50,18 +50,18 @@ def send (dataSerializer):
             corps = file_reader.read()
 
     except Exception as e:
-        ExceptionRaiser({
+        exception_raiser({
             "FR" : "Une erreur durant la lecture du fichier --" + EMAIL_CONTENT_PATH + "-- contenant le corps du mail s'est produite : \n" + str(e),
             "EN" : "An error occurred during the reading of the following file which contains the body of the mail : --" + EMAIL_CONTENT_PATH + "-- \n" + str(e)
         })
-        resultatCSV("! Corps du Texte !", dataSerializer)
+        CSV_result("! Corps du Texte !", dataSerializer)
         exit()
 
     # Ajout du corps du mail
     mail.set_content(corps)
 
     # Récupération et ajout des fichiers PDFs au mail
-    MessagePrinter({
+    message_printer({
         "FR" : "Ajout des PDFs au mail...",
         "EN" : "Adding PFF attachments to the mail..."
     })
@@ -72,11 +72,11 @@ def send (dataSerializer):
                 mail.add_attachment(file_data, maintype='application', subtype='pdf', filename=PDFName)
 
     except Exception as e:
-        ExceptionRaiser({
+        exception_raiser({
             "FR" : "Une erreur durant la lecture du fichier contenant le corps du mail --" + EMAIL_CONTENT_PATH + "-- s'est produite : \n" + str(e),
             "EN" : "An error occurred during the reading of the following PDF file : --" + EMAIL_CONTENT_PATH + "-- \n" + str(e)
         })
-        resultatCSV("! Lecture des PDFs !", dataSerializer)
+        CSV_result("! Lecture des PDFs !", dataSerializer)
         exit()
 
     # Text: maintype='text', subtype='plain'
@@ -90,7 +90,7 @@ def send (dataSerializer):
         smtp_server = ""
 
         # Trouve la configuration adaptée au mail
-        MessagePrinter({
+        message_printer({
             "FR" : "Recherche de la configuration adaptée à l'adresse mail de l'envoyeur...",
             "EN" : "Searching for the configuration adapted to the sender's email address..."
         })
@@ -102,13 +102,13 @@ def send (dataSerializer):
 
         # Si le serveur est toujours vide, aucune configuration n'a été trouvée.
         if smtp_server == "":
-            ExceptionRaiser({
+            exception_raiser({
                 "FR" : "L'adresse mail n'a pas été reconnue, la configuration ne peut être faîtes.",
                 "EN" : "The mail address isn't recognized, configuration can't be set up."
             })
 
         # Envoie du mail
-        MessagePrinter({
+        message_printer({
             "FR" : "Envoie à " + dataSerializer.recipientName + "...",
             "EN" : "Sending to " + dataSerializer.recipientName + "..."
         })
@@ -116,18 +116,18 @@ def send (dataSerializer):
             server.login(EMAIL_SENDER, MDP_APPLICATION)
             server.sendmail(EMAIL_SENDER, receveurs, mail.as_string())
 
-        MessagePrinter({
+        message_printer({
             "FR" : "Mail envoyé !\n\n",
             "EN" : "Mail sent !\n\n"
         })
 
         # Enregistrement des résultat dans un CSV annexe.
-        resultatCSV("Envoyé !", dataSerializer)
+        CSV_result("Envoyé !", dataSerializer)
 
     except Exception as e:
-        ExceptionRaiser({
+        exception_raiser({
             "FR" : "Une erreur durant l'envoie du mail s'est produite : \n" + str(e),
             "EN" : "An error occurred during the sending of the mail : \n" + str(e)
         })
-        resultatCSV("! Problème Envoie du Mail !", dataSerializer)
+        CSV_result("! Problème Envoie du Mail !", dataSerializer)
         exit()

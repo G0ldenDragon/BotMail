@@ -8,8 +8,6 @@ import platform
 from Views.RequirementsWindow_View import RequirementsWindow_View
 
 from Models.EnvironmentVariable_Model import EnvironmentVariable_Model
-from Models.ModelExample1 import ModelExample1
-from Models.ModelExample2 import ModelExample2
 
 from Controllers.LanguageWindow_Controller import LanguageWindow_Controller
 from Controllers.RequirementsWindow_Controller import RequirementsWindow_Controller
@@ -55,7 +53,7 @@ class BotMailGUI(tk.Tk):
 
     # Affiche une view associée au controlleur appellé
     def show_page(self, controller):
-        self.controllers[controller].showPage()
+        self.controllers[controller].show_page()
 
 
 if __name__ == "__main__":
