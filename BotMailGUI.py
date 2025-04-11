@@ -35,7 +35,7 @@ class BotMailGUI(tk.Tk):
 
         # Initialisation des modèles
         environmentVariable_Model = EnvironmentVariable_Model()
-        modelExample2 = ModelExample2()
+        # modelExample2 = ModelExample2()
 
 
         # Initialisation des contrôleurs avec une référence à l'application principale pour initialisation des vues en interne
