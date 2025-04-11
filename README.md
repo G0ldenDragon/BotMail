@@ -60,9 +60,10 @@ Cette catégorie recense toutes les informations à renseigner pour l'utilisatio
     - 📧 Écrire "**XXE**" dans la première ligne d'une colonne indique à BotMail que les lignes suivantes de cette colonne correspondront à l'adresse email des destinataires auxquels un email sera envoyé. (Pour chaque adresse email renseignée dans cette colonne, un email sera envoyé.)  
     - 🏭 Écrire "**XXN**" dans la première ligne d'une colonne indique à BotMail que les lignes suivantes de cette colonne correspondront au nom du destinataire.  
     - 📪 Écrire "**XXA**" dans la première ligne d'une colonne indique à BotMail que les lignes suivantes de cette colonne correspondront à l'adresse postale du destinataire.  
-    - ☎️ Écrire "**XXT**" dans la première ligne d'une colonne indique que les lignes suivantes de cette colonne correspondront au numéro de téléphone du destinataire.  
+    - ☎️ Écrire "**XXT**" dans la première ligne d'une colonne indique que les lignes suivantes de cette colonne correspondront au numéro de téléphone du destinataire.
 
-    *Exemple d'en-tête*  
+  *Exemple d'en-tête*  
+
     | ✅ **XXP** | 📧 **XXE** | 🏭 **XXN** | 📪 **XXA** | ☎️ **XXT** |  
     | --- | --- | --- | --- | --- |  
     | Résultat d'un précédent envoi | Adresse email du destinataire | Nom du destinataire | Adresse postale du destinataire | Numéro de téléphone du destinataire |  
@@ -156,6 +157,9 @@ Cette catégorie recense toutes les informations à renseigner pour l'utilisatio
     ``` Python
     r"Candidature Spontanée pour Job Étudiant"
     ``` -->
+
+## En cours de développement
+- Développement de la partie Interface Homme-Machine pour des personnes non initiées.
 
 ## Améliorations futures
 - [ ] Rendre la lecture des fichiers CSV plus flexible (en supprimant la sensibilité à la casse). → Mise à jour vers la librairie [Pandas](https://pypi.org/project/pandas/) envisagée.
