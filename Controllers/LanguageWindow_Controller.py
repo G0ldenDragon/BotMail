@@ -1,8 +1,11 @@
+from tkinter import ttk
+
 from Constants import LANGUAGES
 from Views.LanguageWindow_View import LanguageWindow_View
 
-class LanguageWindow_Controller:
+class LanguageWindow_Controller(ttk.Frame):
     def __init__(self, container, model):
+        super().__init__(container)
         self.container = container
         self.model = model
         self.view = LanguageWindow_View(container, self)
@@ -35,8 +38,10 @@ class LanguageWindow_Controller:
         if self.language in LANGUAGES:
             print("Langue choisie : " + self.language)
             # Sauvegarde du choix de la langue dans le .env
-            self.model.set_variable("LANGUAGE", self.language)
-            self.container.master.show_page("requirementsWindow_Controller")
+            self.model["environmentVariable_Model"].set_variable("LANGUAGE", self.language)
+
+            # Passage à l'écran 
+            self.container.master.show_page("mainWindow_Controller")
 
         else:
             self.show_error(self.languageChangements["FR"]["error"])

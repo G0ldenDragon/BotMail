@@ -19,7 +19,7 @@ CONFIGURATION_STMP = {
 LANGUAGES = ["FR", "EN"]
 
 # Liste des extensions de fichier valables.
-CORRECT_EXTENSIONS = [".csv", ".xlsx", ".xls", ".ods"]
+CORRECT_FILE_SHEET_EXTENSIONS = [".csv", ".xlsx", ".xls", ".ods"]
 
 # Colonnes des valeurs.
 COLUMNS = ['XXP', 'XXE', 'XXN', 'XXA', 'XXT']
