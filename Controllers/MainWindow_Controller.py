@@ -1,4 +1,4 @@
-from Constants import CORRECT_FILE_SHEET_EXTENSIONS
+from Constants import CORRECT_SHEET_FILE_EXTENSIONS, CORRECT_DOCUMENT_FILE_EXTENSIONS
 from Views.MainWindow_View import MainWindow_View
 
 class MainWindow_Controller:
@@ -12,25 +12,28 @@ class MainWindow_Controller:
 
 
     # Obtention des différents format de tableur possible
-    def get_available_file_sheet_extensions(self):
-        available_extensions = []
-        for extension in CORRECT_FILE_SHEET_EXTENSIONS:
-            available_extensions.append((
-                self.model["Utilities_Model"].language_selector({
-                        "FR" : "Fichier",
-                        "EN" : "File"
-                    }) + " " + extension.replace(".", "").upper(),
-                "*" + extension
+    def get_available_file_extensions(self, fileType):
+        return [(
+            self.model["Utilities_Model"].language_selector((
+                {
+                    "FR": "Fichier Word/Writer",
+                    "EN": "Word/Writer File"
+                } if fileType == "document"
+                else {
+                    "FR": "Fichier Excel/Calc",
+                    "EN": "Excel/Calc File"
+                }
+            )),
+            "".join(f"*{ext} " for ext in (
+                CORRECT_DOCUMENT_FILE_EXTENSIONS if fileType == "document"
+                else CORRECT_SHEET_FILE_EXTENSIONS
             ))
-        return available_extensions
+        )]
 
 
     # Traitement de la modification de la langue
     def file_sheet_selector(self, path):
         self.model["environmentVariable_Model"].set_variable("FILE_SHEET_PATH", path)
-        print(path)
-        # self.path_var.set(path)
-        # self.display_content(path)
 
 
     # Traitement de la sélection de la langue

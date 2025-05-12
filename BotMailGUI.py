@@ -5,6 +5,8 @@ import platform
 # ---------------------
 # Imports
 
+from Constants import LANGUAGES
+
 from Views.MainWindow_View import MainWindow_View
 
 from Models.EnvironmentVariable_Model import EnvironmentVariable_Model
@@ -55,7 +57,7 @@ class BotMailGUI(tk.Tk):
             self.attributes('-zoomed', True)
 
         # Sélection de la première page d'affichage
-        if not environmentVariable_Model.get_variable("LANGUAGE"):
+        if not environmentVariable_Model.get_variable("LANGUAGE") in LANGUAGES :
             # Afficher la première page par défaut
             self.show_page("languageWindow_Controller")
         else:

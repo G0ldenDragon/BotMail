@@ -15,7 +15,7 @@ class EnvironmentVariable_Model:
     # Met à jour une variable d'environnement
     def set_variable(self, key, value):
         set_key(self.env_file, key, value)
-        print(f"Variable '{key}' définie avec succès.")
+        print(f"Variable '{key}' définie avec succès : \n-> {value}")
 
 
     # Supprime une variable d'environnement

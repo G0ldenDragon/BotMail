@@ -5,7 +5,7 @@ import pandas as pd
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=".env")
 
-from Constants import CORRECT_FILE_SHEET_EXTENSIONS
+from Constants import CORRECT_SHEET_FILE_EXTENSIONS
 from Utilities import file_name, exception_raiser
 
 
@@ -38,8 +38,8 @@ class DataSerializer:
             })
         except ImportError as e:
             exception_raiser({
-                "FR" : "L'extension du fichier donné en argument n'est pas la bonne. Voici les extensions valables : " + str(CORRECT_FILE_SHEET_EXTENSIONS).replace("[", "").replace("]", ""),
-                "EN" : "The file extension given in argument is wrong. Here is the available extensions: " + str(CORRECT_FILE_SHEET_EXTENSIONS).replace("[", "").replace("]", "")
+                "FR" : "L'extension du fichier donné en argument n'est pas la bonne. Voici les extensions valables : " + str(CORRECT_SHEET_FILE_EXTENSIONS).replace("[", "").replace("]", ""),
+                "EN" : "The file extension given in argument is wrong. Here is the available extensions: " + str(CORRECT_SHEET_FILE_EXTENSIONS).replace("[", "").replace("]", "")
             })
         except Exception as e:
             exception_raiser({
