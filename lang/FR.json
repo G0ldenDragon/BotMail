@@ -29,8 +29,33 @@
         "exception_csv_general" : "Le fichier donné en argument ne réussi pas à être ouvert. Veuillez vérifier l'état du fichier."
     },
 
+    "document_modificator" : {
+        "exception_document_modification_general" : "Une erreur durant la modification du document ;;; s'est produite : \n",
+        "exception_document_conversion_general" : "Une erreur durant la conversion du document ;;; s'est produite : \n"
+    },
+
+    "email_sender" : {
+        "email_construction" : "Construction du mail...",
+        "email_body" : "Ajout du corps du mail...",
+        "email_attachments" : "Ajout des PDFs au mail...",
+        "stmp_configuration" : "Recherche de la configuration adaptée à l'adresse mail de l'envoyeur...",
+        "email_sending" : "Envoie à ;;;...",
+        "email_sent" : "Mail envoyé !\n\n",
+
+        "exception_email_body_general" : "Une erreur durant la lecture du fichier --;;;-- contenant le corps du mail s'est produite : \n",
+        "exception_email_attachments_general" : "Une erreur durant la lecture du fichier contenant le corps du mail --;;;-- s'est produite : \n",
+        "exception_email_stmp" : "L'adresse mail n'a pas été reconnue, la configuration ne peut être faîtes.",
+        "exception_email_general" : "Une erreur durant l'envoie du mail s'est produite : \n"
+    },
+
+    "utilities" : {
+        "script_finished_but_sheet_opened" : "ATTENTION ! Le mail a bien été envoyé mais l'état 'envoyé' n'a pas pu être inscrit dans la feuille de calcul car elle est ouvert dans un autre programme, veillez à ne pas remettre cette adresse mail lors d'une prochaine utilisation : ;;;",
+        "exception_sheet_opened" : "La feuille de calcul de résultat donné est ouvert dans un autre programme, impossible de l'ouvrir.",
+        "exception_sheet_general" : "Une erreur durant l'enregistrement des résultats s'est produite : \n"
+    },
 
 
+    
 
     "language_selection" : {
         "combobox" : "Choisissez votre langue",

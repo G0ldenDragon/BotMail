@@ -1,26 +1,29 @@
+# Utilities.py
+
 import os
 import pandas as pd
 from pathlib import Path
+
+
+from Models.EnvironmentVariable_Model import load_env, get_variable, set_variable
+load_env()
+from Models.Language_Model import Language
+
+
 from Constants import COLUMNS
-from dotenv import load_dotenv
-load_dotenv(dotenv_path=".env")
+FILE_SHEET_RESULT_PATH = get_variable("FILE_SHEET_RESULT_PATH")
+UTILITIES = "utilities"
 
-# ---------------------------------------
-
-FILE_SHEET_RESULT_PATH = os.getenv("FILE_SHEET_RESULT_PATH")
-
-# ---------------------------------------
 
 def file_name(chemin):
     return Path(chemin).name
 
 # ---------------------------------------
 # Choix de l'utilisateur
-def user_confirmation(userConfirmation: dict[str, dict[str, list[str]]]) -> int:
+def user_confirmation(messageInput: str, userConfirmation: list[str]) -> int:
     userInput = ""
-    messageInput = userConfirmation[os.getenv("LANGUAGE")]["messageInput"]
 
-    for index, choix in enumerate(userConfirmation[os.getenv("LANGUAGE")]["confirmation"]):
+    for index, choix in enumerate(userConfirmation):
         messageInput += f'{index+1}) {choix}\n'
 
     messageInput += '-> '
@@ -28,43 +31,36 @@ def user_confirmation(userConfirmation: dict[str, dict[str, list[str]]]) -> int:
     while True:
         userInput = input(messageInput)
         print("")
-        if userInput in userConfirmation[os.getenv("LANGUAGE")]["confirmation"]:
-            index = userConfirmation[os.getenv("LANGUAGE")]["confirmation"].index(userInput)
+        if userInput in userConfirmation:
+            index = userConfirmation.index(userInput)
             return index
 
 # ---------------------
 # Ajout dans le fichier CSV Résultat
-def CSV_result(resultMessage, dataSerializer):
+def csv_result(resultMessage, data_serializer):
+    language_Model = Language()
+
     try:
-        newLine = pd.DataFrame([[resultMessage, dataSerializer.recipientEmail, dataSerializer.recipientName, dataSerializer.recipientAddress, dataSerializer.recipientPhone]], columns = COLUMNS)
+        newLine = pd.DataFrame([[resultMessage, data_serializer.recipientEmail, data_serializer.recipientName, data_serializer.recipientAddress, data_serializer.recipientPhone]], columns = COLUMNS)
         newLine.to_csv(FILE_SHEET_RESULT_PATH, mode='a', header=False, index=False, sep=';')
 
     except PermissionError as e:
         if resultMessage == "Envoyé !":
-            exception_raiser({
-                "FR" : "ATTENTION ! Le mail a bien été envoyé mais l'état 'envoyé' n'a pas pu être inscrit dans la feuille de calcul car elle est ouvert dans un autre programme, veillez à ne pas remettre cette adresse mail lors d'une prochaine utilisation : " + dataSerializer.recipientEmail,
-                "EN" : "WARNING! The email has been sent successfully, but the 'sent' status could not be recorded in the spreadsheet because it is open in another program. Please make sure not to reuse this email address in future use : " + dataSerializer.recipientEmail
-            })
+            exception_raiser(language_Model.get_translation(UTILITIES, "script_finished_but_sheet_opened").replace(";;;", data_serializer.recipientEmail))
 
         else:
-            exception_raiser({
-                "FR" : "La feuille de calcul de résultat donné est ouvert dans un autre programme, impossible de l'ouvrir.",
-                "EN" : "The result sheet file provided is open in another program, it cannot be accessed."
-            })
+            exception_raiser(language_Model.get_translation(UTILITIES, "exception_sheet_opened"))
 
     except Exception as e:
-        exception_raiser({
-            "FR" : "Une erreur durant l'enregistrement des résultats s'est produite : \n" + str(e),
-            "EN" : "An error occurred during the saving of the results.\n" + str(e)
-        })
+        exception_raiser(language_Model.get_translation(UTILITIES, "exception_sheet_general") + str(e))
         exit()
 
 # ---------------------
 # Raise une exception de la langue utilisée.
-def exception_raiser(errorMessage: dict[str, str]):
-    raise Exception(errorMessage[os.getenv("LANGUAGE")])
+def exception_raiser(errorMessage: str):
+    raise Exception(errorMessage)
 
 # ----------------------
 # Affiche un message de la langue utilisée.
-def message_printer(message: dict[str, str]):
-    print(message[os.getenv("LANGUAGE")])
+def message_printer(message: str):
+    print(message)

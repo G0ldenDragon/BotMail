@@ -29,6 +29,31 @@
         "exception_csv_general" : "The file given in argument is not an Excel file. Please check the status of the file."
     },
 
+    "document_modificator" : {
+        "exception_document_modification_general" : "An error occurred during the modification of the following document : ;;;\n",
+        "exception_document_conversion_general" : "Une erreur durant la conversion du document ;;; s'est produite : \n"
+    },
+
+    "email_sender" : {
+        "email_construction" : "Creation of the mail...",
+        "email_body" : "Adding the email body...",
+        "email_attachments" : "Adding PFF attachments to the mail...",
+        "stmp_configuration" : "Searching for the configuration adapted to the sender's email address...",
+        "email_sending" : "Sending to ;;;...",
+        "email_sent" : "Email sent !\n\n",
+    
+        "exception_email_body_general" : "An error occurred during the reading of the following file which contains the body of the mail : --;;;-- \n",
+        "exception_email_attachments_general" : "An error occurred during the reading of the following PDF file : --;;;-- \n",
+        "exception_email_stmp" : "The mail address isn't recognized, configuration can't be set up.",
+        "exception_email_general" : "An error occurred during the sending of the mail : \n"
+    },
+
+    "utilities" : {
+        "exception_script_finished_but_sheet_opened" : "WARNING! The email has been sent successfully, but the 'sent' status could not be recorded in the spreadsheet because it is open in another program. Please make sure not to reuse this email address in future use : ;;;",
+        "exception_sheet_opened" : "The result sheet file provided is open in another program, it cannot be accessed.",
+        "exception_sheet_general" : "An error occurred during the saving of the results.\n"
+    },
+
 
 
 

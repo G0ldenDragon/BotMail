@@ -1,24 +1,27 @@
+# DataSerializer.py
+
 import os
 from pathlib import Path
-
 import pandas as pd
-from dotenv import load_dotenv
-load_dotenv(dotenv_path=".env")
+
+
+from Utilities import file_name, exception_raiser
+from Models.EnvironmentVariable_Model import load_env, get_variable, set_variable
+load_env()
+from Models.Language_Model import Language
+
 
 from Constants import CORRECT_SHEET_FILE_EXTENSIONS
-from Utilities import file_name, exception_raiser
+DATA_SERIALIZER = "data_serializer"
 
 
-# -------------------------
-
-class DataSerializer:
-    def __init__(self, csvFilePath = os.getenv("FILE_SHEET_PATH")):
+class DataSerializer():
+    def __init__(self, csvFilePath = get_variable("FILE_SHEET_PATH")):
+        language_Model = Language()
+        
         # Vérification du fichier, s'il est vide, il ne sert à rien de continuer.
         if os.stat(csvFilePath).st_size == 0:
-            exception_raiser({
-                "FR" : "Le fichier donné est vide.",
-                "EN" : "The file given in argument is empty."
-            })
+            exception_raiser(language_Model.get_translation(DATA_SERIALIZER, "data_serializer"))
 
         # Obtention de l'extension
         self.fileExtension = Path(file_name(csvFilePath)).suffix
@@ -32,20 +35,11 @@ class DataSerializer:
                 self.ata = pd.read_excel(csvFilePath, header=0)
 
         except pd._config.config.OptionError or ValueError as e:
-            exception_raiser({
-                "FR" : "Le fichier donné en argument n'est pas un fichier de type Excel.",
-                "EN" : "The file given in argument is not an Excel file."
-            })
+            exception_raiser(language_Model.get_translation(DATA_SERIALIZER, "exception_csv_wrong_format"))
         except ImportError as e:
-            exception_raiser({
-                "FR" : "L'extension du fichier donné en argument n'est pas la bonne. Voici les extensions valables : " + str(CORRECT_SHEET_FILE_EXTENSIONS).replace("[", "").replace("]", ""),
-                "EN" : "The file extension given in argument is wrong. Here is the available extensions: " + str(CORRECT_SHEET_FILE_EXTENSIONS).replace("[", "").replace("]", "")
-            })
+            exception_raiser(language_Model.get_translation(DATA_SERIALIZER, "exception_csv_wrong_extension") + str(CORRECT_SHEET_FILE_EXTENSIONS).replace("[", "").replace("]", ""))
         except Exception as e:
-            exception_raiser({
-                "FR" : "Le fichier donné en argument ne réussi pas à être ouvert. Veuillez vérifier l'état du fichier.",
-                "EN" : "The file given in argument is not an Excel file. Please check the status of the file."
-            })
+            exception_raiser(language_Model.get_translation(DATA_SERIALIZER, "exception_csv_general"))
 
         self.previousSend = ""
         self.recipientEmail = ""
