@@ -1,34 +1,27 @@
-from Constants import CORRECT_SHEET_FILE_EXTENSIONS, CORRECT_DOCUMENT_FILE_EXTENSIONS
+# Controllers/MainWindow_Controller.py
+
 from Views.MainWindow_View import MainWindow_View
 
-class MainWindow_Controller:
-    def __init__(self, container, model):
-        self.container = container
-        self.model = model
-        self.view = MainWindow_View(container, self)
 
-        # Add the view to its parent using a layout manager
-        self.view.grid(row=0, column=0, sticky="nsew")
+from Constants import CORRECT_SHEET_FILE_EXTENSIONS, CORRECT_DOCUMENT_FILE_EXTENSIONS
+
+
+class MainWindow_Controller:
+    def __init__(self, model, screen_name: str):
+        self.model = model
+        self.screen_name = screen_name
+        self.view = MainWindow_View(self, name=screen_name)
 
 
     # Obtention des différents format de tableur possible
     def get_available_file_extensions(self, fileType):
-        return [(
-            self.model["Utilities_Model"].language_selector((
-                {
-                    "FR": "Fichier Word/Writer",
-                    "EN": "Word/Writer File"
-                } if fileType == "document"
-                else {
-                    "FR": "Fichier Excel/Calc",
-                    "EN": "Excel/Calc File"
-                }
-            )),
+        return [
+            self.get_translation("document_file") if fileType == "document" else self.get_translation("sheet_file"),
             "".join(f"*{ext} " for ext in (
                 CORRECT_DOCUMENT_FILE_EXTENSIONS if fileType == "document"
                 else CORRECT_SHEET_FILE_EXTENSIONS
             ))
-        )]
+        ]
 
 
     # Traitement de la modification de la langue
@@ -49,25 +42,12 @@ class MainWindow_Controller:
         # self.view.update_error_message(message)
 
 
-    # # Modifie la vue en fonction de la langue
-    # def update_view(self):
-    #     languageChangements = {
-    #         "FR" : {
-    #             "button" : "Choisir cette langue",
-    #             "error" : "Veuillez choisir une langue."
-    #         },
-    #         "EN" : {
-    #             "button" : "Choose this language",
-    #             "error" : "Please choose a language."
-    #         }
-    #     }
-    #
-    #     if self.language in LANGUAGES:
-    #         self.view.update_button_message(languageChangements[self.language]["button"])
-    #     else:
-    #         self.show_error(languageChangements["FR"]["error"])
-
-
     # Renvoie la vue de ce controlleur
     def show_page(self):
-        self.view.tkraise()
+        self.container.clear_widgets()
+        self.container.add_widget(self.view)
+
+
+    # Fonction pour l'utilisation de la traduction sur la vue
+    def get_translation(self, variable: str):
+        return self.model["language_Model"].get_translation(self.screen_name, variable)

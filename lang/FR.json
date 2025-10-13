@@ -1,0 +1,45 @@
+{
+    "terminal_botmail" : {
+        "message_input_overwrite" : "Le fichier --;;;-- va être écrasé, voulez-vous continuer ?\n",
+        "confirmation_overwrite" : ["Oui", "Non"],
+        "message_input_already_sent" : "Un mail à déjà été envoyé à --;;;--, voulez-vous en renvoyer un ? (N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n",
+        "confirmation_already_sent" : ["Oui", "Oui pour Tout", "Non", "Stop"],
+        "message_input_send_confirmation" : "\nVoulez-vous envoyer ce mail à --;;;-- ? (N'oubliez pas de vérifier le PDF de la lettre de motivation généner.)\n",
+        "confirmation_send_confirmation" : ["Oui", "Oui pour Tout", "Non", "Stop"],
+        
+        "recipient_name" : "Destinataire : ---;;;---",
+        "modification" : "Modification...",
+        "modified" : "Modifié !",
+        "conversion" : "Conversion en PDF...",
+        "converted" : "Converti !",
+        "next_recipient" : "Prochain destinataire...\n",
+        "script_end" : "Plus aucun destinataire, arrêt...",
+        "shut_down" : "Arrêt...",
+
+        "exception_csv_opening" : "La feuille de calcul de résultat donné est ouvert dans un autre programme, impossible de l'ouvrir.",
+        "exception_csv_path" : "La feuille de calcul de type ;;; n'a pas été trouvée à partir de ce chemin d'accès.",
+        "exception_csv_general" : "La feuille de calcul de type ;;; est bien trouvé mais rencontre un problème : \n",
+        "exception_invalid_email" : "L'email --;;;-- de --///-- n'est pas valide.\n"
+    },
+
+    "data_serializer" : {
+        "exception_csv_empty" : "Le fichier donné est vide.",
+        "exception_csv_wrong_format" : "Le fichier donné en argument n'est pas un fichier de type Excel.",
+        "exception_csv_wrong_extension" : "L'extension du fichier donné en argument n'est pas la bonne. Voici les extensions valables : ",
+        "exception_csv_general" : "Le fichier donné en argument ne réussi pas à être ouvert. Veuillez vérifier l'état du fichier."
+    },
+
+
+
+
+    "language_selection" : {
+        "combobox" : "Choisissez votre langue",
+        "button" : "Choisir cette langue",
+        "error" : "Veuillez choisir une langue"
+    },
+
+    "main" : {
+        "document_file" : "Fichier Word/Writer",
+        "sheet_file" : "Fichier Excel/Calc"
+    }
+}

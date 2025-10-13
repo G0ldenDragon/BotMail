@@ -1,125 +1,270 @@
-import tkinter as tk
-from pathlib import Path
-from tkinter import ttk, filedialog
+# Views/MainWindow_View.py
 
-from Constants import LANGUAGES
+from kivy.uix.screenmanager import Screen
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+from kivy.metrics import dp
+from kivy.clock import mainthread
+from plyer import filechooser
+
+
+from .CustomComponents import CustomTextInput, CustomButton, SeparatorLine, CustomScrollView, SeparatorBlock, choose_files, choose_directory, choose_save, change_widget_text
 from .TableWindow_View import TableauInteractif
 
-class MainWindow_View(ttk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
+
+from Constants import COLORS, CORRECT_SHEET_FILE_EXTENSIONS, CORRECT_DOCUMENT_FILE_EXTENSIONS, STANDARDIZED_HEIGHT, STANDARDIZED_VOID_HEIGHT, STANDARDIZED_VOID_WIDTH
+
+
+class MainWindow_View(Screen):
+    def __init__(self, controller, name: str, **kwargs):
+        super().__init__(name=name, **kwargs)
+
         self.controller = controller
-        self.selectedLanguage = tk.StringVar()
-        MODERN_FONT = ("Segoe UI", 12)
-
-        # Permet l'affichage d'un message d'erreur
-        self.errorLabel = tk.Label(self, text="", fg="red")
-        self.errorLabel.pack()
-
-        # ---
-
-        self.bind("<Configure>", lambda e: canvas.itemconfig(window, width=e.width))
-
-        canvas = tk.Canvas(self)
-        scrollbar = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
-        self.canvasFrame = ttk.Frame(canvas)
-        window = canvas.create_window((0, 0), window=self.canvasFrame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        self.canvasFrame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        def wheel(e):
-            first, last = canvas.yview()
-            if (e.delta > 0 or getattr(e, 'num', 0) == 4) and first <= 0: return
-            if (e.delta < 0 or getattr(e, 'num', 0) == 5) and last >= 1: return
-            canvas.yview_scroll(-1 if (e.delta > 0 or getattr(e, 'num', 0) == 4) else 1, "units")
-        canvas.bind_all("<MouseWheel>", wheel)
-        canvas.bind_all("<Button-4>", wheel)
-        canvas.bind_all("<Button-5>", wheel)
-
-        style = ttk.Style()
-        style.configure("TButton", font=MODERN_FONT)
-        style.configure("TLabel", font=MODERN_FONT)
-        style.configure("TEntry", font=MODERN_FONT)
-        style.configure("Add.TButton", foreground="green", background="#27ae60", font=MODERN_FONT)
-        style.map("Add.TButton", background=[('active', '#c0392b')])
-        style.configure("Del.TButton", foreground="#e74c3c", background="#23272e")
-        style.map("Del.TButton", foreground=[('active', '#c0392b')])
-
-        for i in range(3): self.canvasFrame.columnconfigure(i, weight=1)
-        PADX = 20
-
-        ttk.Button(self.canvasFrame, text="Import du tableur (Excel/Calc)", style="Accent.TButton", command=self.button_file_selector).grid(row=0, column=0, sticky="ew", padx=(PADX, 5), pady=10)
-        self.path_file_sheet_selector = tk.StringVar()
-        ttk.Button(self.canvasFrame, text="Définition du chemin pour le tableur de résultat", style="Accent.TButton").grid(row=0, column=2, sticky="ew", padx=(5, PADX), pady=10)
-        import_entry = ttk.Entry(self.canvasFrame, font=MODERN_FONT, state="readonly")
-        import_entry.insert(0, "Veuillez importer un fichier...")
-        import_entry.grid(row=1, column=0, sticky="ew", padx=(PADX, 5), pady=(0, 10))
-        path_entry = ttk.Entry(self.canvasFrame, font=MODERN_FONT, state="readonly")
-        path_entry.insert(0, "Veuillez sélectionner un chemin...")
-        path_entry.grid(row=1, column=2, sticky="ew", padx=(5, PADX), pady=(0, 10))
-
-        self.canvasFrame.rowconfigure(2, minsize=15)
-        ttk.Label(self.canvasFrame, text="Objet des emails", anchor="center").grid(row=3, column=0, columnspan=3, sticky="ew", padx=PADX, pady=5)
-        entry = ttk.Entry(self.canvasFrame, font=MODERN_FONT)
-        entry.grid(row=4, column=0, columnspan=3, sticky="ew", padx=PADX, pady=5)
-        self.canvasFrame.rowconfigure(5, minsize=15)
-        ttk.Label(self.canvasFrame, text="Corps des emails", anchor="center").grid(row=6, column=0, columnspan=3, sticky="ew", padx=PADX, pady=5)
-        text2 = tk.Text(self.canvasFrame, height=5, wrap="word", relief="groove", borderwidth=0, highlightthickness=2,
-                        highlightbackground="#444", highlightcolor="#0078D7", font=MODERN_FONT, fg="#fafafa", padx=10, pady=8)
-        text2.grid(row=7, column=0, columnspan=3, sticky="ew", padx=PADX, pady=5)
-        self.canvasFrame.rowconfigure(7, weight=1)
-        ttk.Label(self.canvasFrame, text="Rappel : Ajouter XXN dans l'objet ou le corps de l'email pour personnaliser automatiquement.", anchor="center").grid(row=8, column=0, columnspan=3, sticky="ew", padx=PADX, pady=5)
-        def adjust_height(event=None):
-            lines = int(text2.index('end-1c').split('.')[0])
-            text2.configure(height=max(5, lines))
-        text2.bind("<KeyRelease>", adjust_height)
-
-
-        # Tableaux
-        self.canvasFrame.rowconfigure(10, minsize=20)
-        ttk.Separator(self.canvasFrame, orient="horizontal").grid(row=11, column=0, columnspan=3, sticky="ew", pady=(10, 10))
-        ttk.Label(self.canvasFrame, text="Documents Word/Writer", anchor="center", font=(MODERN_FONT[0], 13, "bold")).grid(row=12, column=0, columnspan=3, sticky="ew", padx=PADX, pady=(0, 10))
-        doc = TableauInteractif(self.canvasFrame, ["Chemin vers le fichier Word/Writer", "Nom du fichier PDF résultant pour l'envoi"], ["document" ,"None"], self.controller)
-        doc.grid(row=13, column=0, columnspan=3, sticky="ew", padx=PADX, pady=5)
-
-        self.canvasFrame.rowconfigure(14, minsize=20)
-        ttk.Separator(self.canvasFrame, orient="horizontal").grid(row=15, column=0, columnspan=3, sticky="ew", pady=(10, 10))
-        ttk.Label(self.canvasFrame, text="Documents PDFs supplémentaires", anchor="center", font=(MODERN_FONT[0], 13, "bold")).grid(row=16, column=0, columnspan=3, sticky="ew", padx=PADX, pady=(0, 10))
-        pdf = TableauInteractif(self.canvasFrame, ["Chemin vers le fichier PDF", "Nom du fichier PDF pour l'envoi"], [[("PDF file", "*.pdf")],"None"], self.controller)
-        pdf.grid(row=17, column=0, columnspan=3, sticky="ew", padx=PADX, pady=5)
-
-
-        # ---
-
-
-    # Fonction appelée lors de la modification dans la combobox
-    def dropdown_language_modification(self, event=None):
-        self.controller.language_modification(self.selectedLanguage.get())
-
-
-    # Gestion du bouton de séléction du tableur
-    def button_file_selector(self, extension):
-        path = filedialog.askopenfilename(
-            title="BotMailGUI",
-            initialdir=str(Path.home()),
-            filetypes=(
-                self.controller.get_available_file_extensions(extension)
-                if isinstance(extension, str)
-                else extension
+        # Filtres explicites pour le sélecteur fichier natif
+        self.filter_sheets = [
+            (
+                "Excel/Calc files " + ", ".join(CORRECT_SHEET_FILE_EXTENSIONS),
+                ";".join(f"*{ext}" for ext in CORRECT_SHEET_FILE_EXTENSIONS)
             )
+        ]
+
+        self.filter_documents = [
+            (
+                "Word/Write files " + ", ".join(CORRECT_DOCUMENT_FILE_EXTENSIONS),
+                ";".join(f"*{ext}" for ext in CORRECT_DOCUMENT_FILE_EXTENSIONS)
+            )
+        ]
+
+
+        # -------------------
+        # UI
+        layout = BoxLayout(orientation='vertical', padding=[dp(8), 0, dp(4), 0])
+        self.add_widget(layout)
+        self.layout = layout
+
+
+        # Scrollbar + Base
+        scroll = CustomScrollView(size_hint=(1, 1))
+        layout.add_widget(scroll)
+        self.scroll = scroll
+
+        content = GridLayout(
+            cols=1, 
+            padding=[0, dp(8), dp(16), 0],
+            size_hint_y=None, 
+            size_hint_x=1
         )
-
-        if path:
-            self.controller.file_sheet_selector(path)
-
-
-    # Permet l'affichage d'un message d'erreur
-    def update_error_message(self, message):
-        self.errorLabel.config(text=message)
+        content.bind(minimum_height=content.setter("height"))
+        scroll.add_widget(content)
+        self.content = content
 
 
-    # Permet la modification du message du button
-    def update_button_message(self, message):
-        self.button.config(text=message)
+        # Boutons pour l'import du fichier CSV et chemin vers le fichier de sauvegarde
+        box1 = BoxLayout(size_hint_y=None, height=dp(45), spacing=dp(STANDARDIZED_VOID_WIDTH), padding=[dp(25), 0, dp(25), 0])
+        box1.add_widget(CustomButton(
+            text="Import du tableur (Excel/Calc)", 
+            on_press=lambda instance: change_widget_text(self.import_path_display, choose_files(self.filter_sheets, "Veuillez importer un fichier..."))
+        ))
+        box1.add_widget(CustomButton(
+            text="Définition du chemin pour le tableur de résultat", 
+            on_press=lambda instance: choose_save(self.filter_sheets)
+        ))
+        content.add_widget(box1)
+        self.box1 = box1
+
+        box2 = BoxLayout(size_hint_y=None, height=dp(45), spacing=dp(STANDARDIZED_VOID_WIDTH), padding=[dp(25), 0, dp(25), 0])
+        import_path_display = CustomTextInput(
+            text="Veuillez importer un fichier...", 
+            readonly=True
+        )
+        result_path_input = CustomTextInput(
+            text="Veuillez sélectionner un chemin...", 
+            readonly=True
+        )
+        box2.add_widget(import_path_display)
+        box2.add_widget(result_path_input)
+        content.add_widget(box2)
+        self.import_path_display = import_path_display
+        self.result_path_input = result_path_input
+        self.box2 = box2
+
+
+        # Block vide pour séparer
+        content.add_widget(SeparatorBlock())
+
+
+        # Input pour l'Objet des emails
+        email_object = CustomTextInput()
+        content.add_widget(Label(text="Objet des emails", size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
+        content.add_widget(email_object)
+        self.email_object = email_object
+
+
+        # Block vide pour séparer
+        content.add_widget(SeparatorBlock())
+
+
+        # Input pour le Corps des email avec multilignes auto-ajusté
+        email_body = CustomTextInput(multiline=True, height=dp(120))
+        content.add_widget(Label(text="Corps des emails", size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
+        email_body.bind(text=self._adjust_corps_height)
+        content.add_widget(email_body)
+        content.add_widget(Label(text="Rappel : Ajouter XXN dans l'objet ou le corps de l'email pour personnaliser automatiquement.", size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
+        self.email_body = email_body
+
+
+        # Block vide pour séparer
+        content.add_widget(SeparatorBlock())
+        # Ligne de séparation
+        content.add_widget(SeparatorLine())
+        # Block vide pour séparer
+        content.add_widget(SeparatorBlock())
+
+        
+        # Tableau pour l'imports des documents Word/Writter
+        content.add_widget(Label(text="Documents Word/Writer", size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
+        self.table_doc = TableauInteractif(
+            headers=[
+                "Chemin vers le fichier Word/Writer", 
+                "Nom du fichier PDF résultant pour l'envoi"
+            ],
+            pattern=[
+                [
+                    [
+                        CustomTextInput,
+                        {
+                            "size_hint_x" : 0.75
+                        } 
+                    ], 
+                    [
+                        CustomButton,
+                        {
+                            "text" : "Click me !",
+                            "size_hint_x" : 0.25
+                        } 
+                    ], 
+                ],
+                [
+                    [
+                        CustomTextInput,
+                        {
+                            "size_hint_x" : 0.75
+                        } 
+                    ], 
+                    [
+                        CustomButton,
+                        {
+                            "text" : "Click me !",
+                            "size_hint_x" : 0.25
+                        } 
+                    ], 
+                ]
+            ]
+        )
+        # self._patch_table_buttons(self.table_doc, self._on_table_doc_file_selected)
+        content.add_widget(self.table_doc)
+
+
+        # Block vide pour séparer
+        content.add_widget(SeparatorBlock())
+
+
+        # Tableau pour l'imports des documents PDFs supplémentaires
+        content.add_widget(Label(text="Documents PDFs supplémentaires", size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
+        self.table_pdf = TableauInteractif(
+            headers=[
+                "Chemin vers le fichier Word/Writer", 
+                "Nom du fichier PDF résultant pour l'envoi"
+            ],
+            pattern=[
+                [
+                    [
+                        CustomTextInput,
+                        {
+                            "size_hint_x" : 0.75
+                        } 
+                    ], 
+                    [
+                        CustomButton,
+                        {
+                            "text" : "Click me !",
+                            "size_hint_x" : 0.25
+                        } 
+                    ], 
+                ],
+                [
+                    [
+                        CustomTextInput,
+                        {} 
+                    ],
+                ]
+            ]
+        )
+        # self._patch_table_buttons(self.table_pdf, self._on_table_pdf_file_selected)
+        content.add_widget(self.table_pdf)
+
+
+
+    
+
+    
+
+    
+
+
+    
+
+    
+
+
+
+    def _adjust_corps_height(self, instance, value):
+        lines = value.count('\n') + 1
+        new_height = max(120, min(300, lines * 28))
+        self.email_body.height = dp(new_height)
+
+
+    def _patch_table_buttons(self, table, on_file_selected):
+        for cell in table.add_row_widgets:
+            if hasattr(cell, 'children'):
+                btn = cell.children[0]
+                def make_cb(c):
+                    return lambda instance: filechooser.open_file(
+                        filters=self.filter_sheets,
+                        on_selection=lambda paths: self._on_table_file_chosen(c, paths, on_file_selected)
+                    )
+                btn.unbind(on_press=btn._bound_callback) if hasattr(btn, '_bound_callback') else None
+                btn.bind(on_press=make_cb(cell))
+
+    @mainthread
+    def _on_table_file_chosen(self, cell_widget, paths, update_fn):
+        if paths:
+            update_fn(cell_widget, paths[0])
+            print(paths[0])
+
+    def _on_table_doc_file_selected(self, cell_widget, path):
+        if hasattr(cell_widget, 'textinput'):
+            cell_widget.textinput.text = path
+
+    def _on_table_pdf_file_selected(self, cell_widget, path):
+        if hasattr(cell_widget, 'textinput'):
+            cell_widget.textinput.text = path
+
+    def update_import_path(self, path):
+        self.import_path_display.text = path
+
+    def update_result_path(self, path):
+        self.result_path_input.text = path
+
+    def get_objet_text(self):
+        return self.email_object.text
+
+    def get_email_body(self):
+        return self.email_body.text
+
+    def get_table_doc_data(self):
+        return self.table_doc.get_all_rows()
+
+    def get_table_pdf_data(self):
+        return self.table_pdf.get_all_rows()

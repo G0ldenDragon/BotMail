@@ -1,36 +1,77 @@
+# Models/EnvironmentVariable_Model.py
+
 import os
 from dotenv import load_dotenv, set_key
 
-class EnvironmentVariable_Model:
-    def __init__(self, env_file=".env"):
-        self.env_file = env_file
-        load_dotenv(self.env_file)
+
+ENV_FILE = ".env"
 
 
-    # Récupération de la valeur d'une variable d'environnement
-    def get_variable(self, key):
-        return os.getenv(key)
+def load_env(env_file: str= ENV_FILE) -> None:
+    """
+    Charges les variables d'environnements en mémoire.
+
+    Args:
+        env_file (str): Chemin d'accès vers le fichier .env.
+    """
+    load_dotenv(env_file, override=True)
 
 
-    # Met à jour une variable d'environnement
-    def set_variable(self, key, value):
-        set_key(self.env_file, key, value)
-        print(f"Variable '{key}' définie avec succès : \n-> {value}")
+def get_variable(key: str) -> str:
+    """
+    Récupère une donnée d'une variable d'environnement.
+
+    Args:
+        key (str): Nom de la variable d'environnement.
+
+    Returns:
+        str: Valeur contenue dans la variable.
+    """
+    return os.getenv(key)
 
 
-    # Supprime une variable d'environnement
-    def delete_variable(self, key):
-        with open(self.env_file, "r") as file:
-            lines = file.readlines()
+def set_variable(key: str, value: str, env_file: str= ENV_FILE) -> None:
+    """
+    Met à jour une variable d'environnement.
 
-        with open(self.env_file, "w") as file:
-            for line in lines:
-                if not line.startswith(f"{key}="):
-                    file.write(line)
-        print(f"Variable '{key}' supprimée avec succès.")
+    Args:
+        key (str): Nom de la variable d'environnement.
+        value (str): Nouvelle valeur de la variable d'environnement.
+        env_file (str): Chemin d'accès vers le fichier .env.
+    """
+    set_key(env_file, key, value)
+    load_env()
+    # print(f"Variable '{key}' définie avec succès : \n-> {value}")
 
 
-    # Liste toutes les variables d'environnement
-    def list_variables(self):
-        for key, value in os.environ.items():
-            print(f"{key}={value}")
+def delete_variable(key: str, env_file: str= ENV_FILE) -> None:
+    """
+    Supprime une variable d'environnement.
+
+    Args:
+        key (str): Nom de la variable d'environnement à supprimer.
+        env_file (str): Chemin d'accès vers le fichier .env.
+    """
+    with open(env_file, "r") as file:
+        lines = file.readlines()
+    with open(env_file, "w") as file:
+        for line in lines:
+            if not line.startswith(f"{key}="):
+                file.write(line)
+    load_env()
+
+    # if not get_variable(key):
+    #     print(f"Variable '{key}' supprimée avec succès.")
+
+
+def list_variables() -> dict:
+    """
+    Liste l'ensemble des variable d'environnement avec leurs valeurs.
+
+    Returns:
+        dict: Dictionnaire avec : clé = nom de la variable ; value = donnée.
+    """
+    # for key, value in os.environ.items():
+    #     print(f"{key}={value}")
+
+    return os.environ.items()

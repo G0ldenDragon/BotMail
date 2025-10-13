@@ -1,3 +1,5 @@
+# Constants.py
+
 # Configuration en fonction des mails utilisée
 CONFIGURATION_STMP = {
     "gmail" : {
@@ -15,13 +17,28 @@ CONFIGURATION_STMP = {
     }
 }
 
-# Langues slélectionnables
-LANGUAGES = ["FR", "EN"]
-
-# Liste des extensions de fichier valables.
+# Liste des extensions des fichiers valables.
 CORRECT_SHEET_FILE_EXTENSIONS = [".csv", ".xlsx", ".xls", ".ods"]
-
 CORRECT_DOCUMENT_FILE_EXTENSIONS = [".docx", ".doc"]
 
 # Colonnes des valeurs.
 COLUMNS = ['XXP', 'XXE', 'XXN', 'XXA', 'XXT']
+
+# Hauteur des éléments UI standardisés
+STANDARDIZED_HEIGHT = 40
+
+# Espace vide pour séparation UI standardisés
+STANDARDIZED_VOID_HEIGHT = 20
+STANDARDIZED_VOID_WIDTH = 50
+
+# Couleurs par défaut
+COLORS = {
+    "white" : (1, 1, 1, 1),
+    "black" : (0, 0, 0, 1),
+    "grey" : (0.5, 0.5, 0.5, 1),
+    "lightBlue" : (0.1, 0.5, 0.9, 1),
+    "red" : (1, 0, 0, 1)
+}
+
+# Langues sélectionnable
+LANGUAGES = ["FR", "EN"]

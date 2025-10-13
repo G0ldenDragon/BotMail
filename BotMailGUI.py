@@ -1,74 +1,78 @@
-import tkinter as tk
-import sv_ttk
-import platform
+# BotMailGUI.py
 
-# ---------------------
-# Imports
+from kivy.app import App
+from kivy.core.window import Window
+from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.screenmanager import NoTransition, SlideTransition
 
-from Constants import LANGUAGES
 
-from Views.MainWindow_View import MainWindow_View
-
-from Models.EnvironmentVariable_Model import EnvironmentVariable_Model
-from Models import Utilities_Model
+from Models.Language_Model import Language
+from Models.EnvironmentVariable_Model import *
 
 from Controllers.LanguageWindow_Controller import LanguageWindow_Controller
 from Controllers.MainWindow_Controller import MainWindow_Controller
-from Controllers.ControllerExample3 import ControllerExample3
-
-# ---------------------
-
-class BotMailGUI(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("BotMailGUI")
-        self.resizable(True, True)
-
-        # Configuration du thème Sun Valley
-        sv_ttk.set_theme("dark")
-        self.os_name = platform.system()
 
 
-        # # Conteneur principal pour les pages
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+from Constants import LANGUAGES
 
 
-        # Initialisation des modèles
-        environmentVariable_Model = EnvironmentVariable_Model()
+class BotMailGUI(App):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.controllers = {}
+
+    def build(self):
+        # Configuration fenêtre
+        Window.minimum_width = 800
+        Window.minimum_height = 600
+
+        self.language_Model = Language()
+
+        # Initialisation contrôleurs avec construction des vues.
+        self.languageScreenController = LanguageWindow_Controller(
+            {
+                "language_Model": self.language_Model,
+            }, 
+            screen_name = "language_selection"
+        )
+        self.mainScreenController = MainWindow_Controller(
+            {
+                "language_Model": self.language_Model,
+            },
+            screen_name = "main"
+        )
 
 
-        # Initialisation des contrôleurs avec une référence à l'application principale pour initialisation des vues en interne
-        self.controllers = {
-            "languageWindow_Controller" : LanguageWindow_Controller(container, {"environmentVariable_Model": environmentVariable_Model}),
-            "mainWindow_Controller" : MainWindow_Controller(container, {
-                "environmentVariable_Model": environmentVariable_Model,
-                "Utilities_Model": Utilities_Model
-            })
-            # "controllerExample3" = ControllerExample3(self.models["PageExample3"], None)
-        }
+        sm = ScreenManager()
+        sm.add_widget(self.languageScreenController.view)
+        sm.add_widget(self.mainScreenController.view)
 
-        # Mise en plein écran
-        if self.os_name.lower().startswith('win'):
-            self.state('zoomed')
-        else:
-            self.attributes('-zoomed', True)
 
-        # Sélection de la première page d'affichage
-        if not environmentVariable_Model.get_variable("LANGUAGE") in LANGUAGES :
+        sm.transition = NoTransition()
+        if not get_variable("LANGUAGE") in LANGUAGES :
             # Afficher la première page par défaut
-            self.show_page("languageWindow_Controller")
+            sm.current = "language_selection"  
         else:
-            self.show_page("mainWindow_Controller")
+            sm.current = "main"
+        sm.transition = SlideTransition()
 
 
-    # Affiche une view associée au controlleur appellé
-    def show_page(self, controller):
-        self.controllers[controller].show_page()
+        # # Mise en plein écran
+        # if self.os_name.lower().startswith('win'):
+        #     self.state('zoomed')
+        # else:
+        #     self.attributes('-zoomed', True)
 
+        return sm
+    
+
+    # def on_start(self):
+    #     if not self.environmentVariable_Model.get_variable("LANGUAGE") in LANGUAGES :
+    #         # Afficher la première page par défaut
+    #         self.root.current = "language"
+    #     else:
+    #         self.root.current = "main"
+        
 
 if __name__ == "__main__":
-    app = BotMailGUI()
-    app.mainloop()
+    BotMailGUI().run()

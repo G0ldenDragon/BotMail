@@ -1,50 +1,49 @@
-from tkinter import ttk
+# Controllers/LanguageWindow_Controller.py
 
-from Constants import LANGUAGES
+from Models.EnvironmentVariable_Model import *
 from Views.LanguageWindow_View import LanguageWindow_View
 
-class LanguageWindow_Controller(ttk.Frame):
-    def __init__(self, container, model):
-        super().__init__(container)
-        self.container = container
-        self.model = model
-        self.view = LanguageWindow_View(container, self)
 
-        # Add the view to its parent using a layout manager
-        self.view.grid(row=0, column=0, sticky="nsew")
+from Constants import LANGUAGES
+
+
+class LanguageWindow_Controller:
+    def __init__(self, model, screen_name: str):
+        self.model = model
+        self.screen_name = screen_name
+        self.view = LanguageWindow_View(self, name=screen_name, size_hint=(1, 1))
 
         self.language = None
-        self.languageChangements = {
-            "FR" : {
-                "button" : "Choisir cette langue",
-                "error" : "Veuillez choisir une langue."
-            },
-            "EN" : {
-                "button" : "Choose this language",
-                "error" : "Please choose a language."
-            }
-        }
+
 
 
     # Traitement de la modification de la langue
     def language_modification(self, language):
-        self.language = language
+        # Sauvegarde du choix de la langue dans le .env
+        set_variable("LANGUAGE", language)
+        # Charge le bon fichier de langue 
+        self.model["language_Model"].update_selected_language()
 
         self.update_view()
 
 
-    # Traitement de la sélection de la langue
-    def language_selection(self, language):
-        if self.language in LANGUAGES:
-            print("Langue choisie : " + self.language)
-            # Sauvegarde du choix de la langue dans le .env
-            self.model["environmentVariable_Model"].set_variable("LANGUAGE", self.language)
 
-            # Passage à l'écran 
-            self.container.master.show_page("mainWindow_Controller")
+    # Traitement de la sélection de la langue
+    def language_selection(self):
+        if get_variable("LANGUAGE") in LANGUAGES:            
+
+            # Passage à l'écran principal
+            self.view.show_page("main")
 
         else:
-            self.show_error(self.languageChangements["FR"]["error"])
+            self.show_error(self.get_translation("error"))
+
+
+
+    # Modifie la vue en fonction de la langue
+    def update_view(self):
+        self.view.update_button_message(self.get_translation("button"))
+
 
 
     # Affiche une erreur utilisateur et dans la console/log
@@ -53,11 +52,7 @@ class LanguageWindow_Controller(ttk.Frame):
         self.view.update_error_message(message)
 
 
-    # Modifie la vue en fonction de la langue
-    def update_view(self):
-        self.view.update_button_message(self.languageChangements[self.language]["button"])
 
-
-    # Renvoie la vue de ce controlleur
-    def show_page(self):
-        self.view.tkraise()
+    # Fonction pour l'utilisation de la traduction sur la vue
+    def get_translation(self, variable: str):
+        return self.model["language_Model"].get_translation(self.screen_name, variable)

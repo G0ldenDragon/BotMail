@@ -1,53 +1,66 @@
-import tkinter as tk
-from tkinter import ttk
+# Views/LanguageWindow_View.py
+
+from kivy.uix.screenmanager import Screen
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+from kivy.uix.spinner import Spinner
+from kivy.metrics import dp
+from kivy.properties import StringProperty
+
 
 from Constants import LANGUAGES
 
-class LanguageWindow_View(ttk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
+
+class LanguageWindow_View(Screen):
+    def __init__(self, controller, name: str, **kwargs):
+        super().__init__(name=name, **kwargs)
+        layout = BoxLayout(orientation='vertical', padding=dp(20), spacing=dp(20))
+        self.add_widget(layout)
+        self.layout = layout
+
         self.controller = controller
-        self.selectedLanguage = tk.StringVar()
+        self.error_message = StringProperty("")
 
         # Permet l'affichage d'un message d'erreur
-        self.errorLabel = tk.Label(self, text="", fg="red")
-        self.errorLabel.pack()
+        self.layout.errorLabel = Label(text="", color=(1,0,0,1), size_hint_y=None, height=dp(30))
+        self.layout.add_widget(self.layout.errorLabel)
 
         # Création du menu déroulant (Combobox)
-        self.dropdownLanguage = ttk.Combobox(
-            self,
-            textvariable=self.selectedLanguage,
+        self.layout.spinner = Spinner(
+            text=self.controller.get_translation("combobox"),
             values=LANGUAGES,
-            state="readonly"
+            size_hint=(1, None),
+            height=dp(44)
         )
-        self.dropdownLanguage.set("Please, select your language")
-        self.dropdownLanguage.pack(padx=20, pady=10)
-        self.dropdownLanguage.bind("<<ComboboxSelected>>", self.dropdown_language_modification)
+        self.layout.spinner.bind(text=self.dropdown_language_modification)
+        self.layout.add_widget(self.layout.spinner)
 
-        # Bouton avec commande liée
-        self.button = ttk.Button(
-            self,
-            text="Choose this language",
-            command=self.button_language_selection
-        )
-        self.button.pack(pady=10)
+        self.layout.button = Button(text=self.controller.get_translation("button"), size_hint=(1, None), height=dp(44))
+        self.layout.button.bind(on_press=self.button_language_selection)
+        self.layout.add_widget(self.layout.button)
 
 
-    # Fonction appelée lors de la modification dans la combobox
-    def dropdown_language_modification(self, event=None):
-        self.controller.language_modification(self.selectedLanguage.get())
+    # Fonction appelée lors de la sélection d'une langue de la combobox
+    def dropdown_language_modification(self, spinner, text):
+        self.controller.language_modification(text)
 
 
-    # Fonction appelé lors du clique sur le bouton
-    def button_language_selection(self):
-        self.controller.language_selection(self.selectedLanguage.get())
+    # Fonction appelé lors de la confirmation de la langue
+    def button_language_selection(self, instance):
+        self.controller.language_selection()
 
 
     # Permet l'affichage d'un message d'erreur
     def update_error_message(self, message):
-        self.errorLabel.config(text=message)
+        self.layout.errorLabel.text = message
 
 
     # Permet la modification du message du button
     def update_button_message(self, message):
-        self.button.config(text=message)
+        self.layout.button.text = message
+
+
+    # Permet le changement de screen
+    def show_page(self, screen_name):
+        self.manager.current = screen_name
