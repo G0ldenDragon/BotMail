@@ -2,7 +2,7 @@
     "terminal_botmail" : {
         "message_input_overwrite" : "The following file --;;;-- will be overwritten, Do you want to continue ?\n",
         "confirmation_overwrite" : ["Yes", "No"],
-        "message_input_already_sent" : "A mail has already been sent to --;;;-- would you like to send another one ? (Don't forget to verify the PDF of the motivation letter generated.)\n",
+        "message_input_already_sent" : "An email has already been sent to --;;;-- would you like to send another one ? (Don't forget to verify the PDF of the motivation letter generated.)\n",
         "confirmation_already_sent" : ["Yes", "Yes for All", "No", "Stop"],
         "message_input_send_confirmation" : "\nWould you like to send this mail to --;;;-- ? (Don't forget to verify the PDF of the motivation letter generated.)\n",
         "confirmation_send_confirmation" : ["Yes", "Yes for All", "No", "Stop"],
@@ -16,6 +16,8 @@
         "script_end" : "No more recipients, shut down...",
         "shut_down" : "Shutting down...",
 
+        "result_invalid_email" : "! Email not valid !",
+
         "exception_csv_opening" : "The result sheet file provided is open in another program, it cannot be accessed.",
         "exception_csv_path" : "The sheet file of type ;;; isn't find with the path given",
         "exception_csv_general" : "The sheet file of type ;;; is found but has the following error : \n",
@@ -26,12 +28,18 @@
         "exception_csv_empty" : "The file given in argument is empty.",
         "exception_csv_wrong_format" : "The file given in argument is not an Excel file.",
         "exception_csv_wrong_extension" : "The file extension given in argument is wrong. Here is the available extensions: ",
-        "exception_csv_general" : "The file given in argument is not an Excel file. Please check the status of the file."
+        "exception_csv_general" : "The file given in argument is not an Excel file. Please check the status of the file.",
+        "exception_script_finished_but_sheet_opened" : "WARNING! The email has been sent successfully, but the 'sent' status could not be recorded in the spreadsheet because it is open in another program. Please make sure not to reuse this email address in future use : ;;;",
+        "exception_sheet_opened" : "The result sheet file provided is open in another program, it cannot be accessed.",
+        "exception_sheet_general" : "An error occurred during the saving of the results.\n"
     },
 
     "document_modificator" : {
+        "result_document_modification_general" : "! An error occurred during the modification of a document !",
+        "result_document_conversion_general" : "! An error occurred during the conversion of a document !",
+
         "exception_document_modification_general" : "An error occurred during the modification of the following document : ;;;\n",
-        "exception_document_conversion_general" : "Une erreur durant la conversion du document ;;; s'est produite : \n"
+        "exception_document_conversion_general" : "An error occurred during the conversion of the following document : \n"
     },
 
     "email_sender" : {
@@ -40,18 +48,16 @@
         "email_attachments" : "Adding PFF attachments to the mail...",
         "stmp_configuration" : "Searching for the configuration adapted to the sender's email address...",
         "email_sending" : "Sending to ;;;...",
-        "email_sent" : "Email sent !\n\n",
-    
-        "exception_email_body_general" : "An error occurred during the reading of the following file which contains the body of the mail : --;;;-- \n",
-        "exception_email_attachments_general" : "An error occurred during the reading of the following PDF file : --;;;-- \n",
+        "email_sent" : "Email sent !",
+        
+        "result_email_body_general" : "! An error occurred during the reading of the file which contains the body of the email !",
+        "result_email_attachments_general" : "! An error occurred during the reading of the following PDF file !",
+        "result_email_general" : "! An error occurred during the sending of the email !",
+
+        "exception_email_body_general" : "An error occurred during the reading of the following file which contains the body of the email : --;;;-- \n",
+        "exception_email_attachments_general" : "An error occurred during the reading of the following PDF file : \n",
         "exception_email_stmp" : "The mail address isn't recognized, configuration can't be set up.",
         "exception_email_general" : "An error occurred during the sending of the mail : \n"
-    },
-
-    "utilities" : {
-        "exception_script_finished_but_sheet_opened" : "WARNING! The email has been sent successfully, but the 'sent' status could not be recorded in the spreadsheet because it is open in another program. Please make sure not to reuse this email address in future use : ;;;",
-        "exception_sheet_opened" : "The result sheet file provided is open in another program, it cannot be accessed.",
-        "exception_sheet_general" : "An error occurred during the saving of the results.\n"
     },
 
 

@@ -5,14 +5,15 @@ from pathlib import Path
 import pandas as pd
 
 
-from Utilities import file_name, exception_raiser
-from Models.EnvironmentVariable_Model import load_env, get_variable, set_variable
+from TerminalUtils import file_name
+from Models.EnvironmentVariable_Model import load_env, get_variable
 load_env()
 from Models.Language_Model import Language
 
 
-from Constants import CORRECT_SHEET_FILE_EXTENSIONS
-DATA_SERIALIZER = "data_serializer"
+from Constants import CORRECT_SHEET_FILE_EXTENSIONS, COLUMNS
+FILE_SHEET_RESULT_PATH = get_variable("FILE_SHEET_RESULT_PATH")
+SCRIPT_NAME = "data_serializer"
 
 
 class DataSerializer():
@@ -21,7 +22,7 @@ class DataSerializer():
         
         # Vérification du fichier, s'il est vide, il ne sert à rien de continuer.
         if os.stat(csvFilePath).st_size == 0:
-            exception_raiser(language_Model.get_translation(DATA_SERIALIZER, "data_serializer"))
+            raise Exception(language_Model.get_translation(SCRIPT_NAME, "data_serializer"))
 
         # Obtention de l'extension
         self.fileExtension = Path(file_name(csvFilePath)).suffix
@@ -35,11 +36,11 @@ class DataSerializer():
                 self.ata = pd.read_excel(csvFilePath, header=0)
 
         except pd._config.config.OptionError or ValueError as e:
-            exception_raiser(language_Model.get_translation(DATA_SERIALIZER, "exception_csv_wrong_format"))
+            raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_csv_wrong_format"))
         except ImportError as e:
-            exception_raiser(language_Model.get_translation(DATA_SERIALIZER, "exception_csv_wrong_extension") + str(CORRECT_SHEET_FILE_EXTENSIONS).replace("[", "").replace("]", ""))
+            raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_csv_wrong_extension") + str(CORRECT_SHEET_FILE_EXTENSIONS).replace("[", "").replace("]", ""))
         except Exception as e:
-            exception_raiser(language_Model.get_translation(DATA_SERIALIZER, "exception_csv_general"))
+            raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_csv_general"))
 
         self.previousSend = ""
         self.recipientEmail = ""
@@ -75,3 +76,22 @@ class DataSerializer():
 
         if pd.notnull(self.data.loc[number, 'XXT']):
             self.recipientPhone = self.data.loc[number, 'XXT']
+
+
+    # Ajout dans le fichier CSV Résultat
+    def csv_result(self, resultMessage):
+        language_Model = Language()
+
+        try:
+            newLine = pd.DataFrame([[resultMessage, self.recipientEmail, self.recipientName, self.recipientAddress, self.recipientPhone]], columns = COLUMNS)
+            newLine.to_csv(FILE_SHEET_RESULT_PATH, mode='a', header=False, index=False, sep=';')
+
+        except PermissionError as e:
+            if resultMessage == language_Model.get_translation("email_sender", "email_sent"):
+                raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_script_finished_but_sheet_opened").replace(";;;", self.recipientEmail))
+
+            else:
+                raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_sheet_opened"))
+
+        except Exception as e:
+            raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_sheet_general") + str(e))

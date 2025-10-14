@@ -7,8 +7,8 @@ import time
 import subprocess
 
 
-from Utilities import csv_result, message_printer, exception_raiser
-from Models.EnvironmentVariable_Model import load_env, get_variable, set_variable
+from DataSerializer import DataSerializer
+from Models.EnvironmentVariable_Model import load_env, get_variable
 load_env()
 from Models.Language_Model import Language
 
@@ -20,11 +20,11 @@ MOTIVATION_LETTER_PATH = get_variable("MOTIVATION_LETTER_PATH")
 MOTIVATION_LETTER_PATH_FINAL = get_variable("MOTIVATION_LETTER_PATH_FINAL")
 MOTIVATION_LETTER_PATH_PDF = get_variable("MOTIVATION_LETTER_PATH_PDF")
 LIBRE_OFFICE_PATH = get_variable("LIBRE_OFFICE_PATH")
-DOCUMENT_MODIFICATOR = "document_modificator"
+SCRIPT_NAME = "document_modificator"
 
 
 # Modificateur du document
-def document_modificator(data_serializer):
+def document_modificator(data_serializer: DataSerializer):
     try:
         motivationLetter = Document(MOTIVATION_LETTER_PATH)
 
@@ -59,11 +59,11 @@ def document_modificator(data_serializer):
 
     except Exception as e:
         language_Model = Language()
-        csv_result("! Modification Lettre de Motivation !", data_serializer)
-        exception_raiser(language_Model.get_translation(DOCUMENT_MODIFICATOR, "exception_document_modification_general").replace(";;;", MOTIVATION_LETTER_PATH) + str(e))
+        data_serializer.csv_result(language_Model.get_translation(SCRIPT_NAME, "result_document_modification_general"))
+        raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_document_modification_general").replace(";;;", MOTIVATION_LETTER_PATH) + str(e))
 
 
-def document_convertor(data_serializer):
+def document_convertor(data_serializer: DataSerializer):
     try:
         subprocess.run(
             [
@@ -78,5 +78,5 @@ def document_convertor(data_serializer):
 
     except Exception as e:
         language_Model = Language()
-        csv_result("! Conversion en PDF !", data_serializer)
-        exception_raiser(language_Model.get_translation(DOCUMENT_MODIFICATOR, "exception_document_conversion_general").replace(";;;", MOTIVATION_LETTER_PATH_FINAL) + str(e))
+        data_serializer.csv_result(language_Model.get_translation(SCRIPT_NAME, "result_document_conversion_general"))
+        raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_document_conversion_general").replace(";;;", MOTIVATION_LETTER_PATH_FINAL) + str(e))

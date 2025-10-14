@@ -16,6 +16,8 @@
         "script_end" : "Plus aucun destinataire, arrêt...",
         "shut_down" : "Arrêt...",
 
+        "result_invalid_email" : "! Email Invalide !",
+
         "exception_csv_opening" : "La feuille de calcul de résultat donné est ouvert dans un autre programme, impossible de l'ouvrir.",
         "exception_csv_path" : "La feuille de calcul de type ;;; n'a pas été trouvée à partir de ce chemin d'accès.",
         "exception_csv_general" : "La feuille de calcul de type ;;; est bien trouvé mais rencontre un problème : \n",
@@ -26,10 +28,16 @@
         "exception_csv_empty" : "Le fichier donné est vide.",
         "exception_csv_wrong_format" : "Le fichier donné en argument n'est pas un fichier de type Excel.",
         "exception_csv_wrong_extension" : "L'extension du fichier donné en argument n'est pas la bonne. Voici les extensions valables : ",
-        "exception_csv_general" : "Le fichier donné en argument ne réussi pas à être ouvert. Veuillez vérifier l'état du fichier."
+        "exception_csv_general" : "Le fichier donné en argument ne réussi pas à être ouvert. Veuillez vérifier l'état du fichier.",
+        "exception_script_finished_but_sheet_opened" : "ATTENTION ! Le mail a bien été envoyé mais l'état 'envoyé' n'a pas pu être inscrit dans la feuille de calcul car elle est ouvert dans un autre programme, veillez à ne pas remettre cette adresse mail lors d'une prochaine utilisation : ;;;",
+        "exception_sheet_opened" : "La feuille de calcul de résultat donné est ouvert dans un autre programme, impossible de l'ouvrir.",
+        "exception_sheet_general" : "Une erreur durant l'enregistrement des résultats s'est produite : \n"
     },
 
     "document_modificator" : {
+        "result_document_modification_general" : "! Une erreur s'est produite durant la modification d'un document !",
+        "result_document_conversion_general" : "! Une erreur s'est produite durant la conversion d'un document !",
+
         "exception_document_modification_general" : "Une erreur durant la modification du document ;;; s'est produite : \n",
         "exception_document_conversion_general" : "Une erreur durant la conversion du document ;;; s'est produite : \n"
     },
@@ -40,20 +48,17 @@
         "email_attachments" : "Ajout des PDFs au mail...",
         "stmp_configuration" : "Recherche de la configuration adaptée à l'adresse mail de l'envoyeur...",
         "email_sending" : "Envoie à ;;;...",
-        "email_sent" : "Mail envoyé !\n\n",
+        "email_sent" : "Email envoyé !",
+
+        "result_email_body_general" : "! Une erreur durant la lecture du fichier contenant le corps du mail s'est produite !",
+        "result_email_attachments_general" : "! Une erreur durant l'ajout des pièces jointes à l'email s'est produite !",
+        "result_email_general" : "! Une erreur durant l'envoie du mail s'est produite !",
 
         "exception_email_body_general" : "Une erreur durant la lecture du fichier --;;;-- contenant le corps du mail s'est produite : \n",
-        "exception_email_attachments_general" : "Une erreur durant la lecture du fichier contenant le corps du mail --;;;-- s'est produite : \n",
+        "exception_email_attachments_general" : "Une erreur durant l'ajout des pièces jointes à l'email s'est produite : \n",
         "exception_email_stmp" : "L'adresse mail n'a pas été reconnue, la configuration ne peut être faîtes.",
         "exception_email_general" : "Une erreur durant l'envoie du mail s'est produite : \n"
     },
-
-    "utilities" : {
-        "script_finished_but_sheet_opened" : "ATTENTION ! Le mail a bien été envoyé mais l'état 'envoyé' n'a pas pu être inscrit dans la feuille de calcul car elle est ouvert dans un autre programme, veillez à ne pas remettre cette adresse mail lors d'une prochaine utilisation : ;;;",
-        "exception_sheet_opened" : "La feuille de calcul de résultat donné est ouvert dans un autre programme, impossible de l'ouvrir.",
-        "exception_sheet_general" : "Une erreur durant l'enregistrement des résultats s'est produite : \n"
-    },
-
 
     
 

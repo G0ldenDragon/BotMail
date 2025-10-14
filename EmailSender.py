@@ -1,11 +1,10 @@
 # EmailSender.py
 
-import os
 import smtplib
 from email.message import EmailMessage
 
 
-from Utilities import csv_result, message_printer, exception_raiser
+from DataSerializer import DataSerializer
 from Models.EnvironmentVariable_Model import load_env, get_variable, set_variable
 load_env()
 from Models.Language_Model import Language
@@ -23,17 +22,17 @@ EMAIL_CONTENT_PATH = get_variable("EMAIL_CONTENT_PATH")
 EMAIL_SUBJECT = get_variable("EMAIL_SUBJECT")
 # !!!!!!! Il doit être obtenu depuis le mail utilisé, un accès autorisé !!!!!!!
 MDP_APPLICATION = get_variable("MDP_APPLICATION")
-EMAIL_SENDER_LANG = "email_sender"
+SCRIPT_NAME = "email_sender"
 
 
-def send(data_serializer):
+def send(data_serializer: DataSerializer):
     language_Model = Language()
 
     # Liste des adresses à qui envoyer le mail
     receveurs = [data_serializer.recipientEmail]
 
     # Construction du mail
-    message_printer(language_Model.get_translation(EMAIL_SENDER_LANG, "email_construction"))
+    print(language_Model.get_translation(SCRIPT_NAME, "email_construction"))
 
     mail = EmailMessage()
 
@@ -42,7 +41,7 @@ def send(data_serializer):
     mail['Subject'] = EMAIL_SUBJECT
 
     # Récupération des données du contenu du mail
-    message_printer(language_Model.get_translation(EMAIL_SENDER_LANG, "email_body"))
+    print(language_Model.get_translation(SCRIPT_NAME, "email_body"))
         
     try:
         # Ouvre et lis les données binaires du .txt pour écrire le corps de mail
@@ -50,14 +49,14 @@ def send(data_serializer):
             corps = file_reader.read()
 
     except Exception as e:
-        csv_result("! Corps du Texte !", data_serializer)
-        exception_raiser(language_Model.get_translation(EMAIL_SENDER_LANG, "exception_email_body_general").replace(";;;", EMAIL_CONTENT_PATH) + str(e))
+        data_serializer.csv_result(language_Model.get_translation(SCRIPT_NAME, "result_email_body_general"))
+        raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_email_body_general").replace(";;;", EMAIL_CONTENT_PATH) + str(e))
 
     # Ajout du corps du mail
     mail.set_content(corps)
 
     # Récupération et ajout des fichiers PDFs au mail
-    message_printer(language_Model.get_translation(EMAIL_SENDER_LANG, "email_attachments"))
+    print(language_Model.get_translation(SCRIPT_NAME, "email_attachments"))
 
     try:
         for PDFPath, PDFName in PDFFILES.items():
@@ -67,8 +66,8 @@ def send(data_serializer):
                     mail.add_attachment(file_data, maintype='application', subtype='pdf', filename=PDFName)
 
     except Exception as e:
-        csv_result("! Lecture des PDFs !", data_serializer)
-        exception_raiser(language_Model.get_translation(EMAIL_SENDER_LANG, "exception_email_attachments_general").replace(";;;", EMAIL_CONTENT_PATH) + str(e))
+        data_serializer.csv_result(language_Model.get_translation(SCRIPT_NAME, "result_email_attachments_general"))
+        raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_email_attachments_general") + str(e))
 
 
     # Text: maintype='text', subtype='plain'
@@ -81,8 +80,8 @@ def send(data_serializer):
         # Définition du serveur
         smtp_server = ""
 
-        # Trouve la configuration adaptée au mail
-        message_printer(language_Model.get_translation(EMAIL_SENDER_LANG, "stmp_configuration"))
+        # Trouve la configuration adaptée à l'email
+        print(language_Model.get_translation(SCRIPT_NAME, "stmp_configuration"))
             
         for provider, config in CONFIGURATION_STMP.items():
             if provider in EMAIL_SENDER:
@@ -92,21 +91,21 @@ def send(data_serializer):
 
         # Si le serveur est toujours vide, aucune configuration n'a été trouvée.
         if smtp_server == "":
-            exception_raiser(language_Model.get_translation(EMAIL_SENDER_LANG, "exception_email_stmp"))
+            raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_email_stmp"))
 
         # Envoie du mail
-        message_printer(language_Model.get_translation(EMAIL_SENDER_LANG, "email_sending").replace(";;;", data_serializer.recipientName))
+        print(language_Model.get_translation(SCRIPT_NAME, "email_sending").replace(";;;", data_serializer.recipientName))
         
         with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
             server.login(EMAIL_SENDER, MDP_APPLICATION)
             server.sendmail(EMAIL_SENDER, receveurs, mail.as_string())
 
-        message_printer(language_Model.get_translation(EMAIL_SENDER_LANG, "email_sent"))
+        print(language_Model.get_translation(SCRIPT_NAME, "email_sent") + "\n\n")
         
         # Enregistrement des résultat dans un CSV annexe.
-        csv_result("Envoyé !", data_serializer)
+        data_serializer.csv_result(language_Model.get_translation(SCRIPT_NAME, "email_sent"))
 
 
     except Exception as e:
-        csv_result("! Problème Envoie du Mail !", data_serializer)
-        exception_raiser(language_Model.get_translation(EMAIL_SENDER_LANG, "exception_email_general") + str(e))
+        data_serializer.csv_result(language_Model.get_translation(SCRIPT_NAME, "result_email_general"))
+        raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_email_general") + str(e))

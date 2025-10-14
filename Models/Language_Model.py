@@ -8,7 +8,7 @@ from Models.EnvironmentVariable_Model import *
 
 
 LANG_FOLDER_PATH = Path(__file__).parent / "../lang"
-DEFAULT_LANGUAGE = "FR"
+DEFAULT_LANGUAGE = "EN"
 
 
 class Language():
@@ -25,7 +25,9 @@ class Language():
         get_translation: Permet l'obtention des informations contenues dans une variable de translation.
     """
     def __init__(self):
-        language_file = (LANG_FOLDER_PATH / f"{DEFAULT_LANGUAGE}.json").resolve()
+        language = get_variable("LANGUAGE") if get_variable("LANGUAGE") else DEFAULT_LANGUAGE
+
+        language_file = (LANG_FOLDER_PATH / f"{language}.json").resolve()
         self.translation = self.load_language_file(language_file)
 
 

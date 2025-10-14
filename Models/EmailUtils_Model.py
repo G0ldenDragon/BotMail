@@ -1,6 +1,8 @@
+from validate_email import validate_email
+
+
 from Constants import CONFIGURATION_STMP
 
-from validate_email import validate_email
 
 class EmailUtils_Model:
     def __init__(self, emailSender : str = ""):
