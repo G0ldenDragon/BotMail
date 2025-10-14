@@ -13,7 +13,7 @@ CONFIGURATION_STMP = {
     "outlook" : {
         "smtp_server" : "smtp-mail.outlook.com",
         "smtp_port" : 465
-        # or maybe 587 ?
+        # ou peut-être 587 ?
     }
 }
 
