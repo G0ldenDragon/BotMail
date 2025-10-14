@@ -53,7 +53,6 @@ def csv_result(resultMessage, data_serializer):
 
     except Exception as e:
         exception_raiser(language_Model.get_translation(UTILITIES, "exception_sheet_general") + str(e))
-        exit()
 
 # ---------------------
 # Raise une exception de la langue utilisée.
