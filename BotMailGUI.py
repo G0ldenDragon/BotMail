@@ -6,8 +6,8 @@ from kivy.uix.screenmanager import ScreenManager
 from kivy.uix.screenmanager import NoTransition, SlideTransition
 
 
-from Models.Language_Model import Language
-from Models.EnvironmentVariable_Model import *
+from Models.Language import Language
+from Models.EnvironmentVariable import *
 
 from Controllers.LanguageWindow_Controller import LanguageWindow_Controller
 from Controllers.MainWindow_Controller import MainWindow_Controller
@@ -26,18 +26,18 @@ class BotMailGUI(App):
         Window.minimum_width = 800
         Window.minimum_height = 600
 
-        self.language_Model = Language()
+        self.language = Language()
 
         # Initialisation contrôleurs avec construction des vues.
         self.languageScreenController = LanguageWindow_Controller(
             {
-                "language_Model": self.language_Model,
+                "language": self.language,
             }, 
             screen_name = "language_selection"
         )
         self.mainScreenController = MainWindow_Controller(
             {
-                "language_Model": self.language_Model,
+                "language": self.language,
             },
             screen_name = "main"
         )

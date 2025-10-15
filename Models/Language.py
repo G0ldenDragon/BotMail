@@ -1,10 +1,10 @@
-# Models/Language_Model.py
+# Models/Language.py
 
 import json
 from pathlib import Path
 
 
-from Models.EnvironmentVariable_Model import *
+from Models.EnvironmentVariable import *
 
 
 LANG_FOLDER_PATH = Path(__file__).parent / "../lang"

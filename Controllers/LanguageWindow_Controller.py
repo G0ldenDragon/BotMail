@@ -1,6 +1,6 @@
 # Controllers/LanguageWindow_Controller.py
 
-from Models.EnvironmentVariable_Model import *
+from Models.EnvironmentVariable import *
 from Views.LanguageWindow_View import LanguageWindow_View
 
 
@@ -22,7 +22,7 @@ class LanguageWindow_Controller:
         # Sauvegarde du choix de la langue dans le .env
         set_variable("LANGUAGE", language)
         # Charge le bon fichier de langue 
-        self.model["language_Model"].update_selected_language()
+        self.model["language"].update_selected_language()
 
         self.update_view()
 
@@ -55,4 +55,4 @@ class LanguageWindow_Controller:
 
     # Fonction pour l'utilisation de la traduction sur la vue
     def get_translation(self, variable: str):
-        return self.model["language_Model"].get_translation(self.screen_name, variable)
+        return self.model["language"].get_translation(self.screen_name, variable)

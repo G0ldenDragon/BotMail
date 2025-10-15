@@ -50,4 +50,4 @@ class MainWindow_Controller:
 
     # Fonction pour l'utilisation de la traduction sur la vue
     def get_translation(self, variable: str):
-        return self.model["language_Model"].get_translation(self.screen_name, variable)
+        return self.model["language"].get_translation(self.screen_name, variable)

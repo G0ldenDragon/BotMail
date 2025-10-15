@@ -8,9 +8,9 @@ import subprocess
 
 
 from DataSerializer import DataSerializer
-from Models.EnvironmentVariable_Model import load_env, get_variable
+from Models.EnvironmentVariable import load_env, get_variable
 load_env()
-from Models.Language_Model import Language
+from Models.Language import Language
 
 
 # !!!!!!! Le nom du destinataire doit être remplacée par "XXN" !!!!!!!!!!!!!
@@ -58,9 +58,9 @@ def document_modificator(data_serializer: DataSerializer):
         motivationLetter.save(MOTIVATION_LETTER_PATH_FINAL)
 
     except Exception as e:
-        language_Model = Language()
-        data_serializer.csv_result(language_Model.get_translation(SCRIPT_NAME, "result_document_modification_general"))
-        raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_document_modification_general").replace(";;;", MOTIVATION_LETTER_PATH) + str(e))
+        language = Language()
+        data_serializer.csv_result(language.get_translation(SCRIPT_NAME, "result_document_modification_general"))
+        raise Exception(language.get_translation(SCRIPT_NAME, "exception_document_modification_general").replace(";;;", MOTIVATION_LETTER_PATH) + str(e))
 
 
 def document_convertor(data_serializer: DataSerializer):
@@ -77,6 +77,6 @@ def document_convertor(data_serializer: DataSerializer):
             ])
 
     except Exception as e:
-        language_Model = Language()
-        data_serializer.csv_result(language_Model.get_translation(SCRIPT_NAME, "result_document_conversion_general"))
-        raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_document_conversion_general").replace(";;;", MOTIVATION_LETTER_PATH_FINAL) + str(e))
+        language = Language()
+        data_serializer.csv_result(language.get_translation(SCRIPT_NAME, "result_document_conversion_general"))
+        raise Exception(language.get_translation(SCRIPT_NAME, "exception_document_conversion_general").replace(";;;", MOTIVATION_LETTER_PATH_FINAL) + str(e))

@@ -9,8 +9,7 @@ from kivy.clock import mainthread
 from plyer import filechooser
 
 
-from .CustomComponents import CustomTextInput, CustomButton, SeparatorLine, CustomScrollView, SeparatorBlock, choose_files, choose_directory, choose_save, change_widget_text
-from .TableWindow_View import TableauInteractif
+from .KivyCustomComponents import CustomTextInput, CustomButton, SeparatorLine, CustomScrollView, SeparatorBlock, TableauInteractif, choose_files, choose_directory, choose_save, change_widget_text
 
 
 from Constants import COLORS, CORRECT_SHEET_FILE_EXTENSIONS, CORRECT_DOCUMENT_FILE_EXTENSIONS, STANDARDIZED_HEIGHT, STANDARDIZED_VOID_HEIGHT, STANDARDIZED_VOID_WIDTH

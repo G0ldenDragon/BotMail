@@ -9,9 +9,9 @@ from TerminalUtils import user_confirmation, file_name
 from DataSerializer import DataSerializer
 from DocumentModificator import document_modificator, document_convertor
 from EmailSender import *
-from Models.EnvironmentVariable_Model import load_env, get_variable
+from Models.EnvironmentVariable import load_env, get_variable
 load_env()
-from Models.Language_Model import Language
+from Models.Language import Language
 
 
 from Constants import COLUMNS
@@ -24,7 +24,7 @@ SCRIPT_NAME = "terminal_botmail"
 if __name__ == '__main__':
     # Extraction et sérialisation des données
     data_serializer = DataSerializer()
-    language_Model = Language()
+    language = Language()
 
     try:
         # Créer ou demande l'écrasement du fichier CSV résultant
@@ -35,19 +35,19 @@ if __name__ == '__main__':
 
         else:
             userInput = user_confirmation(
-                language_Model.get_translation(SCRIPT_NAME, "message_input_overwrite").replace(";;;", file_name(FILE_SHEET_RESULT_PATH)),
-                language_Model.get_translation(SCRIPT_NAME, "confirmation_overwrite")
+                language.get_translation(SCRIPT_NAME, "message_input_overwrite").replace(";;;", file_name(FILE_SHEET_RESULT_PATH)),
+                language.get_translation(SCRIPT_NAME, "confirmation_overwrite")
             )
 
             if userInput == 1:
-                print(language_Model.get_translation(SCRIPT_NAME, "shut_down"))
+                print(language.get_translation(SCRIPT_NAME, "shut_down"))
                 exit()
 
             if userInput == 0:
                 resultFile = pd.DataFrame(columns = COLUMNS)
                 resultFile.to_csv(FILE_SHEET_RESULT_PATH, index=False, sep=';')
     except PermissionError as e:
-        raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_csv_opening"))
+        raise Exception(language.get_translation(SCRIPT_NAME, "exception_csv_opening"))
 
     userInput = ""
 
@@ -66,24 +66,24 @@ if __name__ == '__main__':
             if validate_email(data_serializer.recipientEmail):
 
                 # Impression du destinataire à qui va être envoyé le mail.
-                print(language_Model.get_translation(SCRIPT_NAME, "recipient_name").replace(";;;", data_serializer.recipientName))
+                print(language.get_translation(SCRIPT_NAME, "recipient_name").replace(";;;", data_serializer.recipientName))
 
                 # -------------------------------------------
                 # Modification Docx
 
                 # Modification du Docx en fonction des noms des destinataires
-                print(language_Model.get_translation(SCRIPT_NAME, "modification"))
+                print(language.get_translation(SCRIPT_NAME, "modification"))
                 
                 document_modificator(data_serializer)
-                print(language_Model.get_translation(SCRIPT_NAME, "modified"))
+                print(language.get_translation(SCRIPT_NAME, "modified"))
 
                 # -------------------------------------------
                 # Création PDF
 
                 # Conversion du Docx en PDF
-                print(language_Model.get_translation(SCRIPT_NAME, "conversion"))
+                print(language.get_translation(SCRIPT_NAME, "conversion"))
                 document_convertor(data_serializer)
-                print(language_Model.get_translation(SCRIPT_NAME, "converted"))
+                print(language.get_translation(SCRIPT_NAME, "converted"))
 
                 # -------------------------------------------
                 # Envoie des mails
@@ -92,34 +92,34 @@ if __name__ == '__main__':
                 if userInput != 1:
 
                     # Si un email a déjà été envoyé à ce destinataire
-                    if data_serializer.previousSend == language_Model.get_translation("email_sender", "email_sent"):
+                    if data_serializer.previousSend == language.get_translation("email_sender", "email_sent"):
                         userInput = user_confirmation(
-                            language_Model.get_translation(SCRIPT_NAME, "message_input_already_sent").replace(";;;", file_name(FILE_SHEET_RESULT_PATH)),
-                            language_Model.get_translation(SCRIPT_NAME, "confirmation_already_sent")
+                            language.get_translation(SCRIPT_NAME, "message_input_already_sent").replace(";;;", file_name(FILE_SHEET_RESULT_PATH)),
+                            language.get_translation(SCRIPT_NAME, "confirmation_already_sent")
                         )
 
                     else:
                         userInput = user_confirmation(
-                            language_Model.get_translation(SCRIPT_NAME, "message_input_send_confirmation").replace(";;;", data_serializer.recipientName),
-                            language_Model.get_translation(SCRIPT_NAME, "confirmation_send_confirmation")
+                            language.get_translation(SCRIPT_NAME, "message_input_send_confirmation").replace(";;;", data_serializer.recipientName),
+                            language.get_translation(SCRIPT_NAME, "confirmation_send_confirmation")
                         )
 
                 # Si Stop : Arrêt du programme
                 if userInput == 3:
-                    print(language_Model.get_translation(SCRIPT_NAME, "shut_down"))
+                    print(language.get_translation(SCRIPT_NAME, "shut_down"))
                     exit()
 
                 # Si Non : Destinataire suivant
                 if userInput == 2:
-                    print(language_Model.get_translation(SCRIPT_NAME, "next_recipient"))
+                    print(language.get_translation(SCRIPT_NAME, "next_recipient"))
 
                 # Si Oui : Envoie d'un mail
                 if userInput == 0 or userInput == 1:
                     send(data_serializer)
 
             else:
-                data_serializer.csv_result(language_Model.get_translation(SCRIPT_NAME, "result_invalid_email"))
-                raise Exception(language_Model.get_translation(
+                data_serializer.csv_result(language.get_translation(SCRIPT_NAME, "result_invalid_email"))
+                raise Exception(language.get_translation(
                     SCRIPT_NAME, "exception_invalid_email"
                     ).replace(
                         ";;;", data_serializer.recipientEmail
@@ -128,10 +128,10 @@ if __name__ == '__main__':
                     )
                 )
 
-        print(language_Model.get_translation(SCRIPT_NAME, "script_end"))
+        print(language.get_translation(SCRIPT_NAME, "script_end"))
 
     except FileNotFoundError as e:
-        raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_csv_path").replace(";;;", data_serializer.fileExtension))
+        raise Exception(language.get_translation(SCRIPT_NAME, "exception_csv_path").replace(";;;", data_serializer.fileExtension))
 
     except Exception as e:
-        raise Exception(language_Model.get_translation(SCRIPT_NAME, "exception_csv_general").replace(";;;", data_serializer.fileExtension) + str(e))
+        raise Exception(language.get_translation(SCRIPT_NAME, "exception_csv_general").replace(";;;", data_serializer.fileExtension) + str(e))

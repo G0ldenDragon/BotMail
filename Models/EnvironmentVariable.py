@@ -1,4 +1,4 @@
-# Models/EnvironmentVariable_Model.py
+# Models/EnvironmentVariable.py
 
 import os
 from dotenv import load_dotenv, set_key
