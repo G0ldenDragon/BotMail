@@ -56,21 +56,33 @@
 
         "exception_email_body_general" : "An error occurred during the reading of the following file which contains the body of the email : --;;;-- \n",
         "exception_email_attachments_general" : "An error occurred during the reading of the following PDF file : \n",
-        "exception_email_stmp" : "The mail address isn't recognized, configuration can't be set up.",
+        "exception_email_stmp" : "The email address isn't recognized, configuration can't be set up.",
         "exception_email_general" : "An error occurred during the sending of the mail : \n"
     },
 
 
 
+    "kivy_custom_components" : {
+        "choose_files" : "Choose the file(s)...",
+        "choose_directory" : "Choose the folder...",
+        "choose_save" : "Save as..."
+    },
 
-    "language_selection" : {
+    "screen_language_selection" : {
         "combobox" : "Select your language here",
         "button" : "Select this language",
         "error" : "Please choose a language"
     },
     
-    "main" : {
-        "document_file" : "Word/Writer File",
-        "sheet_file" : "Excel/Calc File"
+    "screen_main" : {
+        "document_file" : "Word/Writer File : ",
+        "sheet_file" : "Excel/Calc File : ",
+        "import_sheet_button" : "Import the sheet file (Excel/Calc)",
+        "save_sheet_button" : "Choose the file sheet save path",
+        "import_sheet_default_text" : "Please import a sheet file...",
+        "save_sheet_default_text" : "Please choose a file sheet save path...",
+        "email_object" : "Email objects",
+        "email_body" : "Email bodies",
+        "reminder" : "Reminder : Use 'XXN' or the other ones in the email object or body to personalise it."
     }
 }

@@ -7,10 +7,11 @@ from kivy.uix.screenmanager import NoTransition, SlideTransition
 
 
 from Models.Language import Language
-from Models.EnvironmentVariable import *
+from Models.EnvironmentVariable import load_env, get_variable
+load_env()
 
-from Controllers.LanguageWindow_Controller import LanguageWindow_Controller
-from Controllers.MainWindow_Controller import MainWindow_Controller
+from Controllers.LanguageScreen_Controller import LanguageScreen_Controller
+from Controllers.MainScreen_Controller import MainScreen_Controller
 
 
 from Constants import LANGUAGES
@@ -29,17 +30,17 @@ class BotMailGUI(App):
         self.language = Language()
 
         # Initialisation contrôleurs avec construction des vues.
-        self.languageScreenController = LanguageWindow_Controller(
+        self.languageScreenController = LanguageScreen_Controller(
             {
                 "language": self.language,
             }, 
-            screen_name = "language_selection"
+            screen_name = "screen_language_selection"
         )
-        self.mainScreenController = MainWindow_Controller(
+        self.mainScreenController = MainScreen_Controller(
             {
                 "language": self.language,
             },
-            screen_name = "main"
+            screen_name = "screen_main"
         )
 
 
@@ -51,9 +52,9 @@ class BotMailGUI(App):
         sm.transition = NoTransition()
         if not get_variable("LANGUAGE") in LANGUAGES :
             # Afficher la première page par défaut
-            sm.current = "language_selection"  
+            sm.current = "screen_language_selection"
         else:
-            sm.current = "main"
+            sm.current = "screen_main"
         sm.transition = SlideTransition()
 
 
@@ -71,7 +72,7 @@ class BotMailGUI(App):
     #         # Afficher la première page par défaut
     #         self.root.current = "language"
     #     else:
-    #         self.root.current = "main"
+    #         self.root.current = "screen_main"
         
 
 if __name__ == "__main__":

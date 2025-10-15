@@ -24,13 +24,6 @@ CORRECT_DOCUMENT_FILE_EXTENSIONS = [".docx", ".doc"]
 # Colonnes des valeurs.
 COLUMNS = ['XXP', 'XXE', 'XXN', 'XXA', 'XXT']
 
-# Hauteur des éléments UI standardisés
-STANDARDIZED_HEIGHT = 40
-
-# Espace vide pour séparation UI standardisés
-STANDARDIZED_VOID_HEIGHT = 20
-STANDARDIZED_VOID_WIDTH = 50
-
 # Couleurs par défaut
 COLORS = {
     "white" : (1, 1, 1, 1),
@@ -42,3 +35,13 @@ COLORS = {
 
 # Langues sélectionnable
 LANGUAGES = ["FR", "EN"]
+
+
+# ----------------
+# DANS LE .env !
+# Hauteur des éléments UI standardisés
+STANDARDIZED_HEIGHT = 40
+
+# Espace vide pour séparation UI standardisés
+STANDARDIZED_VOID_HEIGHT = 20
+STANDARDIZED_VOID_WIDTH = 50

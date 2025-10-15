@@ -16,7 +16,11 @@ from kivy.properties import BooleanProperty
 from plyer import filechooser
 
 
+from Models.Language import Language
+
+
 from Constants import COLORS, STANDARDIZED_HEIGHT, STANDARDIZED_VOID_HEIGHT
+SCRIPT_NAME = "kivy_custom_components"
 
 
 # TextInput custom
@@ -185,11 +189,39 @@ class TableauInteractif(GridLayout):
 
     # Création d'un ligne à partir du patterne
     def _new_cell(self, widgets: list):
-        cell = BoxLayout(orientation="horizontal", size_hint_y=None, size_hint_x=(0.99 / len(self.pattern) + 1), height=self.row_height)
+        cell = BoxLayout(
+            orientation="horizontal",
+            size_hint_y=None,
+            size_hint_x=(0.99 / len(self.pattern) + 1),
+            height=self.row_height
+        )
 
-        for widget in widgets:
-            classe, parameters = widget
-            instance = classe(**parameters)
+        created_widgets = {}
+
+        for classe, parameters in widgets:
+            on_press_func_str = parameters.get("on_press_func")
+            text_input = created_widgets.get("text_input")
+
+            # Supprime on_press_func et instances des paramètres passés à la classe
+            params_copy = parameters.copy()
+            params_copy.pop("on_press_func", None)
+            instances_dict = params_copy.pop("instances", {})
+
+            instance = classe(**params_copy)
+
+            if on_press_func_str and text_input:
+                on_press_func_str = on_press_func_str.replace("TEXTINPUT", "text_input")
+                eval_context = instances_dict.copy()
+                eval_context["text_input"] = text_input
+
+                print(eval_context)
+
+                # évaluer la lambda dans un espace sécurisé avec les bonnes références
+                func = eval(on_press_func_str, {}, eval_context)
+                instance.bind(on_press=func)
+
+            if issubclass(classe, TextInput):
+                created_widgets["text_input"] = instance
 
             cell.add_widget(instance)
 
@@ -286,13 +318,13 @@ class TableauInteractif(GridLayout):
 # Modifications des widgets
 def change_widget_text(widget, text: str) -> None: 
     widget.text = text
-    widget.cursor = (0, 0)
+    widget.cursor = (len(text), 0)
     widget.scroll_x = 0
 
 
 
 # FileChooser
-def choose_files(filter: list, defaultReturn = "", multiple: bool= False) -> str:
+def choose_files(filter: list, title: str = Language().get_translation(SCRIPT_NAME, "choose_files"), defaultReturn = "", multiple: bool= False) -> str:
         result = {'files': defaultReturn}  # container mutable (pour palier à l'asynchronéité)
 
         def on_select(paths):
@@ -303,7 +335,7 @@ def choose_files(filter: list, defaultReturn = "", multiple: bool= False) -> str
             result['files'] = defaultReturn
 
         filechooser.open_file(
-            title="Choisir le(s) fichier(s)...",
+            title=title,
             filters=filter,
             multiple=multiple,
             on_selection=on_select,
@@ -314,7 +346,7 @@ def choose_files(filter: list, defaultReturn = "", multiple: bool= False) -> str
 
 
 
-def choose_directory(defaultReturn="") -> str:
+def choose_directory(title: str = Language().get_translation(SCRIPT_NAME, "choose_directory"), defaultReturn = "") -> str:
     result = {'directory': defaultReturn}  # container mutable (pour palier à l'asynchronéité)
 
     def on_select(paths):
@@ -325,7 +357,7 @@ def choose_directory(defaultReturn="") -> str:
         result['directory'] = defaultReturn
 
     filechooser.choose_dir(
-        title="Choisir le dossier...", 
+        title=title, 
         on_selection=on_select,
         on_cancel=on_cancel
     )
@@ -334,10 +366,21 @@ def choose_directory(defaultReturn="") -> str:
 
     
 
-def choose_save(filter: list) -> str:
-    save = filechooser.save_file(
-        title="Enregistrer sous...", 
-        filters=filter
+def choose_save(filter: list, title: str = Language().get_translation(SCRIPT_NAME, "choose_save"), defaultReturn = "") -> str:
+    result = {'save': defaultReturn}  # container mutable (pour palier à l'asynchronéité)
+
+    def on_select(paths):
+        if paths:
+            result['save'] = paths[0]
+
+    def on_cancel():
+        result['save'] = defaultReturn
+
+    filechooser.save_file(
+        title=title, 
+        filters=filter,
+        on_selection=on_select,
+        on_cancel=on_cancel
     )
 
-    print(save)
+    return result['save']

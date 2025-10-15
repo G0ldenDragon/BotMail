@@ -5,7 +5,7 @@ from email.message import EmailMessage
 
 
 from DataSerializer import DataSerializer
-from Models.EnvironmentVariable import load_env, get_variable, set_variable
+from Models.EnvironmentVariable import load_env, get_variable
 load_env()
 from Models.Language import Language
 

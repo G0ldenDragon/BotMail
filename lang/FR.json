@@ -62,14 +62,28 @@
 
     
 
-    "language_selection" : {
+    "kivy_custom_components" : {
+        "choose_files" : "Choisir le(s) fichier(s)...",
+        "choose_directory" : "Choisir le dossier...",
+        "choose_save" : "Enregistrer sous..."
+    },
+
+    "screen_language_selection" : {
         "combobox" : "Choisissez votre langue",
         "button" : "Choisir cette langue",
         "error" : "Veuillez choisir une langue"
     },
 
-    "main" : {
-        "document_file" : "Fichier Word/Writer",
-        "sheet_file" : "Fichier Excel/Calc"
+    "screen_main" : {
+        "document_file" : "Fichier Word/Writer : ",
+        "sheet_file" : "Fichier Excel/Calc : ",
+        "import_sheet_button" : "Import du tableur (Excel/Calc)",
+        "save_sheet_button" : "Définition du chemin pour le tableur de résultat",
+        "import_sheet_default_text" : "Veuillez importer un fichier...",
+        "save_sheet_default_text" : "Veuillez sélectionner un chemin...",
+        
+        "email_object" : "Objets des emails",
+        "email_body" : "Corps des emails",
+        "reminder" : "Rappel : Ajouter 'XXN' ou les autres dans l'objet ou le corps de l'email pour personnaliser automatiquement."
     }
 }

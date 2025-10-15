@@ -1,4 +1,4 @@
-# Views/MainWindow_View.py
+# Views/MainScreen_View.py
 
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
@@ -15,25 +15,10 @@ from .KivyCustomComponents import CustomTextInput, CustomButton, SeparatorLine, 
 from Constants import COLORS, CORRECT_SHEET_FILE_EXTENSIONS, CORRECT_DOCUMENT_FILE_EXTENSIONS, STANDARDIZED_HEIGHT, STANDARDIZED_VOID_HEIGHT, STANDARDIZED_VOID_WIDTH
 
 
-class MainWindow_View(Screen):
+class MainScreen_View(Screen):
     def __init__(self, controller, name: str, **kwargs):
         super().__init__(name=name, **kwargs)
-
         self.controller = controller
-        # Filtres explicites pour le sélecteur fichier natif
-        self.filter_sheets = [
-            (
-                "Excel/Calc files " + ", ".join(CORRECT_SHEET_FILE_EXTENSIONS),
-                ";".join(f"*{ext}" for ext in CORRECT_SHEET_FILE_EXTENSIONS)
-            )
-        ]
-
-        self.filter_documents = [
-            (
-                "Word/Write files " + ", ".join(CORRECT_DOCUMENT_FILE_EXTENSIONS),
-                ";".join(f"*{ext}" for ext in CORRECT_DOCUMENT_FILE_EXTENSIONS)
-            )
-        ]
 
 
         # -------------------
@@ -62,23 +47,35 @@ class MainWindow_View(Screen):
         # Boutons pour l'import du fichier CSV et chemin vers le fichier de sauvegarde
         box1 = BoxLayout(size_hint_y=None, height=dp(45), spacing=dp(STANDARDIZED_VOID_WIDTH), padding=[dp(25), 0, dp(25), 0])
         box1.add_widget(CustomButton(
-            text="Import du tableur (Excel/Calc)", 
-            on_press=lambda instance: change_widget_text(self.import_path_display, choose_files(self.filter_sheets, "Veuillez importer un fichier..."))
+            text=self.controller.get_translation("import_sheet_button"), 
+            on_press=lambda instance: change_widget_text(
+                self.import_path_display, 
+                choose_files(
+                    self.controller.get_sorted_file_explorer("sheet_file"), 
+                    defaultReturn = self.controller.get_translation("import_sheet_default_text")
+                )
+            )
         ))
         box1.add_widget(CustomButton(
-            text="Définition du chemin pour le tableur de résultat", 
-            on_press=lambda instance: choose_save(self.filter_sheets)
+            text=self.controller.get_translation("save_sheet_button"),
+            on_press=lambda instance: change_widget_text(
+                self.result_path_input, 
+                choose_save(
+                    self.controller.get_sorted_file_explorer("sheet_file"),
+                    defaultReturn = self.controller.get_translation("save_sheet_default_text")
+                )
+            )
         ))
         content.add_widget(box1)
         self.box1 = box1
 
         box2 = BoxLayout(size_hint_y=None, height=dp(45), spacing=dp(STANDARDIZED_VOID_WIDTH), padding=[dp(25), 0, dp(25), 0])
         import_path_display = CustomTextInput(
-            text="Veuillez importer un fichier...", 
+            text=self.controller.get_translation("import_sheet_default_text"), 
             readonly=True
         )
         result_path_input = CustomTextInput(
-            text="Veuillez sélectionner un chemin...", 
+            text=self.controller.get_translation("save_sheet_default_text"), 
             readonly=True
         )
         box2.add_widget(import_path_display)
@@ -95,7 +92,7 @@ class MainWindow_View(Screen):
 
         # Input pour l'Objet des emails
         email_object = CustomTextInput()
-        content.add_widget(Label(text="Objet des emails", size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
+        content.add_widget(Label(text=controller.get_translation("email_object"), size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
         content.add_widget(email_object)
         self.email_object = email_object
 
@@ -106,10 +103,10 @@ class MainWindow_View(Screen):
 
         # Input pour le Corps des email avec multilignes auto-ajusté
         email_body = CustomTextInput(multiline=True, height=dp(120))
-        content.add_widget(Label(text="Corps des emails", size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
+        content.add_widget(Label(text=controller.get_translation("email_body"), size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
         email_body.bind(text=self._adjust_corps_height)
         content.add_widget(email_body)
-        content.add_widget(Label(text="Rappel : Ajouter XXN dans l'objet ou le corps de l'email pour personnaliser automatiquement.", size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
+        content.add_widget(Label(text=controller.get_translation("reminder"), size_hint_y=None, height=dp(STANDARDIZED_HEIGHT), color=COLORS["white"]))
         self.email_body = email_body
 
 
@@ -128,6 +125,8 @@ class MainWindow_View(Screen):
                 "Chemin vers le fichier Word/Writer", 
                 "Nom du fichier PDF résultant pour l'envoi"
             ],
+
+            # FAIRE PASSER LES INSTANCES DES WIDGETS DIRECTEMENT ?
             pattern=[
                 [
                     [
@@ -140,7 +139,14 @@ class MainWindow_View(Screen):
                         CustomButton,
                         {
                             "text" : "Click me !",
-                            "size_hint_x" : 0.25
+                            "size_hint_x" : 0.25,
+                            # "on_press_func" : "lambda instance: change_widget_text(TEXTINPUT, choose_files(get_sorted_file_explorer, defaultReturn = get_translation))",
+                            # "instances" : {
+                            #     "change_widget_text" : change_widget_text,
+                            #     "choose_files" : choose_files,
+                            #     "get_sorted_file_explorer" : lambda : self.controller.get_sorted_file_explorer("sheet_file"),
+                            #     "get_translation" : lambda : self.controller.get_translation("import_sheet_default_text")
+                            # }
                         } 
                     ], 
                 ],
@@ -230,7 +236,7 @@ class MainWindow_View(Screen):
                 btn = cell.children[0]
                 def make_cb(c):
                     return lambda instance: filechooser.open_file(
-                        filters=self.filter_sheets,
+                        filters=self.controller.get_sorted_file_explorer("sheet_file"),
                         on_selection=lambda paths: self._on_table_file_chosen(c, paths, on_file_selected)
                     )
                 btn.unbind(on_press=btn._bound_callback) if hasattr(btn, '_bound_callback') else None
@@ -250,13 +256,15 @@ class MainWindow_View(Screen):
         if hasattr(cell_widget, 'textinput'):
             cell_widget.textinput.text = path
 
+
+
     def update_import_path(self, path):
         self.import_path_display.text = path
 
     def update_result_path(self, path):
         self.result_path_input.text = path
 
-    def get_objet_text(self):
+    def get_email_object(self):
         return self.email_object.text
 
     def get_email_body(self):

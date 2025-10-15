@@ -4,7 +4,8 @@ import json
 from pathlib import Path
 
 
-from Models.EnvironmentVariable import *
+from Models.EnvironmentVariable import load_env, get_variable
+load_env()
 
 
 LANG_FOLDER_PATH = Path(__file__).parent / "../lang"
@@ -17,6 +18,7 @@ class Language():
     Sélectionner une langue à partir de ses deux premières lettres (Par exemple : EN ; FR), définit le fichier à utiliser.
 
     Attributes:
+        language (str): Contient la langue sélectionnée.
         translation (dict): Contient les informations contenues dans le fichier JSON utilisé.
 
     Methods:
@@ -25,9 +27,8 @@ class Language():
         get_translation: Permet l'obtention des informations contenues dans une variable de translation.
     """
     def __init__(self):
-        language = get_variable("LANGUAGE") if get_variable("LANGUAGE") else DEFAULT_LANGUAGE
-
-        language_file = (LANG_FOLDER_PATH / f"{language}.json").resolve()
+        self.language = get_variable("LANGUAGE") if get_variable("LANGUAGE") else DEFAULT_LANGUAGE
+        language_file = (LANG_FOLDER_PATH / f"{self.language}.json").resolve()
         self.translation = self.load_language_file(language_file)
 
 
@@ -70,4 +71,7 @@ class Language():
         Returns:
             any: Valeur contenue dans la variable.
         """
-        return self.translation[screen_name][variable]
+        if self.translation[screen_name].get(variable):
+            return self.translation[screen_name].get(variable)
+        else:
+            raise KeyError(f"La variable {variable} n'existe pas dans le fichier de la langue {self.self.language}.")
